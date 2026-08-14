@@ -177,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        const navLinks = document.querySelectorAll('a[href^="#"], a[href="work.html"], a.pjax-back, a[href^="index.html"]');
+        const navLinks = document.querySelectorAll('a[href^="#"], a[href$=".html"], a.pjax-back');
 
         navLinks.forEach(link => {
             link.addEventListener('click', (e) => {
@@ -512,9 +512,9 @@ document.addEventListener('DOMContentLoaded', () => {
             particles = [];
             resizeCanvas();
             const rect = taglineSection.getBoundingClientRect();
-            
+
             const originalHTML = taglineText.innerHTML;
-            
+
             const splitIntoLetters = (node) => {
                 const fragment = document.createDocumentFragment();
                 Array.from(node.childNodes).forEach(child => {
@@ -548,26 +548,26 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.save();
             ctx.scale(dpr, dpr);
-            
+
             const chars = taglineText.querySelectorAll('.canvas-char');
             chars.forEach(span => {
                 const charRect = span.getBoundingClientRect();
                 const style = window.getComputedStyle(span);
-                
+
                 const x = charRect.left - rect.left;
                 const y = charRect.top - rect.top;
 
                 ctx.font = `${style.fontStyle} ${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
                 ctx.fillStyle = style.color;
                 ctx.textBaseline = 'top';
-                
+
                 // Fine-tune baseline alignment for a near-perfect match
-                ctx.fillText(span.textContent, x, y + (parseFloat(style.fontSize) * 0.12)); 
+                ctx.fillText(span.textContent, x, y + (parseFloat(style.fontSize) * 0.12));
             });
 
             ctx.restore();
             taglineText.innerHTML = originalHTML;
-            
+
             const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
             const data = imageData.data;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -576,7 +576,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // On a 2x retina display, step=1 means creating particles for every physical screen pixel!
             // If it's too slow on retina screens, we could increase step, but since the physics loop 
             // is highly optimized, it should run smoothly.
-            
+
             for (let y = 0; y < canvas.height; y += step) {
                 for (let x = 0; x < canvas.width; x += step) {
                     const index = (y * canvas.width + x) * 4;
@@ -595,8 +595,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             vx: 0,
                             vy: 0,
                             color: `rgb(${r},${g},${b})`,
-                            size: step, 
-                            ease: 0.05 + Math.random() * 0.08 
+                            size: step,
+                            ease: 0.05 + Math.random() * 0.08
                         });
                     }
                 }
@@ -615,16 +615,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 let dx = mouse.x - p.x;
                 let dy = mouse.y - p.y;
                 let distance = Math.sqrt(dx * dx + dy * dy);
-                
+
                 if (distance < mouse.radius) {
                     let forceDirectionX = dx / distance;
                     let forceDirectionY = dy / distance;
                     let force = (mouse.radius - distance) / mouse.radius;
-                    
+
                     // Push away
                     p.vx -= forceDirectionX * force * 4;
                     p.vy -= forceDirectionY * force * 4;
-                    
+
                     // Orbit slightly
                     p.vx += forceDirectionY * force * 1.5;
                     p.vy -= forceDirectionX * force * 1.5;
@@ -682,7 +682,7 @@ document.addEventListener('DOMContentLoaded', () => {
             mouse.x = (e.touches[0].clientX - rect.left) * dpr;
             mouse.y = (e.touches[0].clientY - rect.top) * dpr;
         }, { passive: true });
-        
+
         taglineSection.addEventListener('touchend', () => {
             mouse.x = -1000;
             mouse.y = -1000;

@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script>
+        if (sessionStorage.getItem('shutterTransition')) {
+            document.documentElement.classList.add('shutter-loading');
+        }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact — Capture Culture</title>
+    <meta name="description" content="Get in touch with Capture Culture. We don't just shoot, we tell stories.">
+    <meta property="og:title" content="Contact — Capture Culture">
+    <meta property="og:description"
+        content="Contact us for weddings, commercials, music videos, drone, and documentary filmmaking.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Contact Page Redesign */
+        .contact-page-content {
+            padding: 160px 5vw 100px;
+            max-width: 1500px;
+            margin: 0 auto;
+            color: var(--text-primary);
+        }
+
+        /* 1. HERO */
+        .cp-hero {
+            margin-bottom: 80px;
+            position: relative;
+        }
+
+        /* Override global tagline ID styles for this page */
+        #tagline {
+            padding: 0 !important;
+            max-width: none !important;
+            margin-top: 0 !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            margin-bottom: 140px !important;
+        }
+
+        #tagline-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .cp-title {
+            font-family: var(--font-heading);
+            font-size: clamp(4rem, 10vw, 120px);
+            font-weight: 800;
+            line-height: 0.9;
+            letter-spacing: -0.04em;
+            color: var(--accent-1);
+        }
+
+        #tagline-text.cp-title {
+            font-size: clamp(4rem, 10vw, 120px) !important;
+            line-height: 0.9 !important;
+            color: var(--accent-1) !important;
+            margin-bottom: 0 !important;
+            opacity: 0;
+        }
+
+        /* Prevent custom cursor state for tagline text on Contact page */
+        #cursor.about-hover {
+            width: 20px !important;
+            height: 20px !important;
+            background-color: #ff002b !important;
+            box-shadow: none !important;
+            mix-blend-mode: normal !important;
+        }
+
+        /* 2. TWO COLUMN LAYOUT */
+        .cp-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 10vw;
+            margin-bottom: 120px;
+        }
+
+        /* LEFT: Info */
+        .cp-info {
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .cp-info-block {
+            margin-bottom: 30px;
+        }
+
+        .cp-info-label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--text-muted);
+        }
+
+        /* RIGHT: Form */
+        .cp-form {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 40px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .form-group {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cp-label {
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+
+        .cp-input,
+        .cp-textarea {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+            padding: 10px 0;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            color: var(--text-primary);
+            border-radius: 0;
+            transition: border-bottom-color 0.3s ease;
+        }
+
+        .cp-input:focus,
+        .cp-textarea:focus {
+            outline: none;
+            border-bottom-color: var(--text-primary);
+        }
+
+        .cp-textarea {
+            resize: vertical;
+            min-height: 40px;
+        }
+
+        .cp-checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        .cp-checkbox-group input {
+            accent-color: var(--text-primary);
+            width: 16px;
+            height: 16px;
+        }
+
+        .cp-submit {
+            align-self: flex-start;
+            background: rgb(192, 254, 4);
+            color: black;
+            padding: 12px 36px;
+            border-radius: 30px;
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .cp-submit:hover {
+            opacity: 0.8;
+            transform: translateY(-2px);
+        }
+
+        /* 3. LARGE CONTACT DETAILS */
+        .cp-large-contact {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 30px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .cp-large-link {
+            font-family: var(--font-heading);
+            font-size: clamp(1.8rem, 4vw, 3rem);
+            font-weight: 800;
+            color: var(--text-primary);
+            text-decoration: none;
+            position: relative;
+            letter-spacing: -0.02em;
+        }
+
+        .cp-large-link::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--text-primary);
+            transform: scaleX(0);
+            transform-origin: bottom right;
+            transition: transform 0.4s cubic-bezier(0.86, 0, 0.07, 1);
+        }
+
+        .cp-large-link:hover::after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+
+        /* 4. SMALL INFO ROW */
+        .cp-footer-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .cp-socials {
+            display: flex;
+            gap: 20px;
+        }
+
+        .cp-socials a {
+            transition: color 0.3s ease;
+        }
+
+        .cp-socials a:hover {
+            color: var(--text-primary);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .cp-grid {
+                grid-template-columns: 1fr;
+                gap: 60px;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 40px;
+            }
+
+            .cp-large-contact {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .cp-footer-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+        }
+
+        /* Animation initial states */
+        .reveal-elem {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <!-- ═══════════════════════════════════ CUSTOM CURSOR ═══════════════════════════════════ -->
+    <div id="cursor">
+        <span class="cursor-text"></span>
+    </div>
+
+
+    <!-- ═══════════════════════════════════ SHUTTER REVEAL ═══════════════════════════════════ -->
+    <div id="shutter" aria-hidden="true">
+        <div class="shutter-strip"></div>
+        <div class="shutter-strip"></div>
+        <div class="shutter-strip"></div>
+        <div class="shutter-strip"></div>
+        <div class="shutter-strip"></div>
+    </div>
+
+    <!-- ═══════════════════════════════════ NAVIGATION ═══════════════════════════════════ -->
+    <nav id="main-nav">
+        <!-- Top state (visible at top of page) -->
+        <div class="nav-state nav-state-top">
+            <div class="nav-left">
+                <a href="index.html#services" class="nav-pill magnetic">Services
+                    <svg viewBox="0 0 10 10">
+                        <path d="M2 8L8 2M8 2H3M8 2V7" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </a>
+                <a href="index.html#projects" class="nav-pill magnetic">Portfolio
+                    <svg viewBox="0 0 10 10">
+                        <path d="M2 8L8 2M8 2H3M8 2V7" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </a>
+                <a href="index.html#tagline" class="nav-pill magnetic">About
+                    <svg viewBox="0 0 10 10">
+                        <path d="M2 8L8 2M8 2H3M8 2V7" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </a>
+            </div>
+
+            <div class="nav-right">
+                <a href="index.html" class="nav-pill magnetic">Home
+                    <svg viewBox="0 0 10 10">
+                        <path d="M2 8L8 2M8 2H3M8 2V7" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </a>
+                <button class="nav-burger" id="nav-mtoggle" aria-label="Open menu" aria-expanded="false">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Scrolled state (visible after scrolling) -->
+        <div class="nav-state nav-state-scrolled">
+            <a href="index.html" class="nav-logo" aria-label="Capture Culture — Home">Capture Culture</a>
+            <div class="ns-right">
+                <a href="index.html#services" class="nav-pill magnetic">Services
+                    <svg viewBox="0 0 10 10">
+                        <path d="M2 8L8 2M8 2H3M8 2V7" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </a>
+                <a href="index.html#projects" class="nav-pill magnetic">Portfolio
+                    <svg viewBox="0 0 10 10">
+                        <path d="M2 8L8 2M8 2H3M8 2V7" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </a>
+                <a href="index.html#tagline" class="nav-pill magnetic">About
+                    <svg viewBox="0 0 10 10">
+                        <path d="M2 8L8 2M8 2H3M8 2V7" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </a>
+                <a href="index.html" class="nav-pill magnetic">Home
+                    <svg viewBox="0 0 10 10">
+                        <path d="M2 8L8 2M8 2H3M8 2V7" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </a>
+                <button class="nav-burger" aria-label="Open menu" aria-expanded="false">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ═══════════════════════════════════ MOBILE MENU ═══════════════════════════════════ -->
+    <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+        <div class="mm-head">
+            <span class="mm-logo">Capture Culture</span>
+            <button class="mm-close" id="mm-close" aria-label="Close menu">
+                <svg viewBox="0 0 16 16">
+                    <path d="M3 3l10 10M13 3L3 13" stroke-linecap="round" stroke-width="1.5"></path>
+                </svg>
+            </button>
+        </div>
+        <nav class="mm-links">
+            <a href="index.html#hero" class="mm-link">Home</a>
+            <a href="index.html#reel" class="mm-link">Showreel</a>
+            <a href="index.html#services" class="mm-link">Services</a>
+            <a href="index.html#projects" class="mm-link">Portfolio</a>
+        </nav>
+        <div class="mm-foot">
+            <p class="mm-contact">
+                <a href="mailto:hello@captureculture.com">hello@captureculture.com</a><br>
+                <a href="tel:+919876543210">+91 98765 43210</a>
+            </p>
+        </div>
+    </div>
+
+    <main class="main-wrapper">
+        <section class="contact-page-content">
+            <!-- 1. Hero -->
+            <div class="cp-hero reveal-elem" id="tagline">
+                <canvas id="tagline-canvas" aria-hidden="true"></canvas>
+                <h1 class="cp-title" id="tagline-text">Contact us</h1>
+            </div>
+
+            <!-- 2. Two Column Layout -->
+            <div class="cp-grid reveal-elem">
+                <!-- Left: Info -->
+                <div class="cp-info">
+                    <div class="cp-info-block">
+                        <div class="cp-info-label">Indore, India</div>
+                        <div>2026</div>
+                    </div>
+                    <div class="cp-info-block">
+                        <div class="cp-info-label">Office hours</div>
+                        <div>Monday - Friday<br>11 AM - 7 PM</div>
+                    </div>
+                </div>
+
+                <!-- Right: Form -->
+                <form id="contact-form" class="cp-form">
+                    <div class="form-group" style="gap: 15px;">
+                        <label class="cp-label">Name (required)</label>
+                        <div class="form-row">
+                            <input type="text" id="first_name" name="first_name" class="cp-input" required
+                                placeholder="First Name">
+                            <input type="text" id="last_name" name="last_name" class="cp-input" required
+                                placeholder="Last Name">
+                        </div>
+                        <input type="hidden" id="name" name="name">
+                    </div>
+
+                    <div class="form-group" style="gap: 15px;">
+                        <label class="cp-label">Service</label>
+                        <select id="subject" name="_subject" class="cp-input">
+                            <option value="" disabled selected></option>
+                            <option value="Wedding">Wedding Film</option>
+                            <option value="Commercial">Commercial</option>
+                            <option value="Music Video">Music Video</option>
+                            <option value="Real Estate">Real Estate</option>
+                            <option value="Documentary">Documentary</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="gap: 15px;">
+                        <label class="cp-label">Email (required)</label>
+                        <input type="email" id="email" name="email" class="cp-input" required>
+                    </div>
+
+                    <label class="cp-checkbox-group">
+                        <input type="checkbox" name="newsletter">
+                        Sign up for news and updates
+                    </label>
+
+                    <div class="form-group" style="gap: 15px;">
+                        <label class="cp-label">Project description</label>
+                        <textarea id="message" name="message" class="cp-textarea"></textarea>
+                    </div>
+
+                    <button type="submit" class="cp-submit magnetic">Submit</button>
+                </form>
+            </div>
+
+            <!-- 3. Large Contact Details -->
+            <!-- <div class="cp-large-contact reveal-elem">
+                <a href="mailto:hello@captureculture.com" class="cp-large-link">hello@captureculture.com</a>
+                <a href="tel:+919876543210" class="cp-large-link">+91 98765 43210</a>
+            </div>
+
+            4. Small Info Row
+            <!-- <div class="cp-footer-row reveal-elem">
+                <div>© 2026 Capture Culture | Indore, India</div>
+                <div class="cp-socials">
+                    <a href="#" class="magnetic">Behance</a>
+                    <a href="#" class="magnetic">Instagram</a>
+                    <a href="#" class="magnetic">LinkedIn</a>
+                    <a href="#" class="magnetic">Privacy Policy</a>
+                </div>
+            </div> --> -->
+        </section>
+    </main>
+
+    <!-- ═══════════════════════════════════ CINEMATIC FOOTER ═══════════════════════════════════ -->
+    <footer id="premium-footer">
+        <div class="pf-glow"></div>
+
+        <div class="pf-marquee-wrap">
+            <div class="footer-marquee-track">
+                <span class="fm-unit">GET IN TOUCH <span class="fm-sep">/</span></span>
+                <span class="fm-unit">GET IN TOUCH <span class="fm-sep">/</span></span>
+                <span class="fm-unit">GET IN TOUCH <span class="fm-sep">/</span></span>
+                <span class="fm-unit">GET IN TOUCH <span class="fm-sep">/</span></span>
+            </div>
+        </div>
+
+        <div class="pf-inner">
+            <div class="pf-grid">
+                <!-- Left -->
+                <div class="pf-col pf-brand">
+                    <div class="pf-logo">Capture Culture</div>
+                    <div class="pf-statement">
+                        Filmmaker.<br>
+                        Creative Developer.<br>
+                        Visual Storyteller.
+                    </div>
+                </div>
+
+                <!-- Middle -->
+                <div class="pf-col pf-nav">
+                    <h4 class="pf-col-title">Navigation</h4>
+                    <nav class="pf-links">
+                        <a href="index.html" class="magnetic">Home</a>
+                        <a href="index.html#tagline" class="magnetic">About</a>
+                        <a href="index.html#projects" class="magnetic">Portfolio</a>
+                        <a href="index.html#services" class="magnetic">Services</a>
+                        <a href="contact.html" class="magnetic">Contact</a>
+                    </nav>
+                </div>
+
+                <!-- Right -->
+                <div class="pf-col pf-contact">
+                    <h4 class="pf-col-title">Socials</h4>
+                    <div class="pf-social-grid">
+                        <a href="#" class="magnetic">Instagram</a>
+                        <a href="#" class="magnetic">YouTube</a>
+                        <a href="#" class="magnetic">LinkedIn</a>
+                        <a href="#" class="magnetic">Behance</a>
+                        <a href="#" class="magnetic">GitHub</a>
+                    </div>
+                    <div class="pf-contact-info">
+                        <a href="mailto:hello@captureculture.com" class="magnetic">hello@captureculture.com</a><br>
+                        <a href="tel:+919876543210" class="magnetic">+91 98765 43210</a><br>
+                        <span>Mumbai, India</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pf-bottom">
+                <div class="pf-copy">© 2026 Capture Culture. All rights reserved.</div>
+                <button class="back-to-top magnetic pf-btt" aria-label="Back to top">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 15l-6-6-6 6" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Video Modal -->
+    <div id="video-modal" class="video-modal" aria-hidden="true">
+        <div class="video-modal-backdrop"></div>
+        <button class="video-modal-close magnetic" aria-label="Close video">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+        <div class="video-modal-container">
+            <!-- Iframe injected by JS -->
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════ SCRIPTS ═══════════════════════════════════ -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <!-- Supabase integration -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+
+    <script src="js/main.js"></script>
+
+    <!-- EmailJS Integration -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function () {
+            // Initialize EmailJS with your Public Key
+            // You can find this in EmailJS Dashboard -> Account -> API Keys
+            emailjs.init('9_EWjg2LQ_HU0xHYL');
+        })();
+
+        document.getElementById('contact-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const submitBtn = document.querySelector('.cp-submit');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Sending...';
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = '0.7';
+
+            // Combine first and last name
+            const firstName = document.getElementById('first_name').value;
+            const lastName = document.getElementById('last_name').value;
+            document.getElementById('name').value = `${firstName} ${lastName}`;
+
+            // Generate parameters for EmailJS
+            const templateParams = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                _subject: document.getElementById('subject').value,
+                message: document.getElementById('message').value
+            };
+
+            // Replace 'YOUR_SERVICE_ID' and 'YOUR_TEMPLATE_ID' with your actual IDs
+            emailjs.send('service_tomtu3m', 'template_jb27s3e', templateParams)
+                .then(function () {
+                    submitBtn.textContent = 'Message Sent!';
+                    submitBtn.style.opacity = '1';
+                    document.getElementById('contact-form').reset();
+                    setTimeout(() => {
+                        submitBtn.textContent = originalText;
+                        submitBtn.disabled = false;
+                    }, 3000);
+                }, function (error) {
+                    submitBtn.textContent = 'Failed to Send';
+                    submitBtn.style.opacity = '1';
+                    console.error('EmailJS Error:', error);
+                    setTimeout(() => {
+                        submitBtn.textContent = originalText;
+                        submitBtn.disabled = false;
+                    }, 3000);
+                });
+        });
+
+        // GSAP entry animations
+        window.addEventListener("load", () => {
+            gsap.to(".reveal-elem", {
+                y: 0,
+                opacity: 1,
+                duration: 0.8,
+                stagger: 0.2,
+                ease: "power3.out"
+            });
+        });
+    </script>
+</body>
+
+</html>
