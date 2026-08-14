@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script>
+        if (sessionStorage.getItem('shutterTransition')) {
+            document.documentElement.classList.add('shutter-loading');
+        }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capture Culture — We Don't Just Shoot, We Tell Stories</title>
+    <meta name="description"
+        content="Capture Culture is a creative videography studio specializing in weddings, commercials, music videos, real estate drone footage, and documentary filmmaking. Let's tell your story.">
+    <meta property="og:title" content="Capture Culture — Creative Videography Studio">
+    <meta property="og:description"
+        content="We don't just shoot — we tell stories. Weddings, commercials, music videos, drone, and documentary filmmaking.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- ═══════════════════════════════════ CUSTOM CURSOR ═══════════════════════════════════ -->
+    <div id="cursor">
+        <span class="cursor-text"></span>
+    </div>
+
+
+
+    <!-- ═══════════════════════════════════ SHUTTER REVEAL ═══════════════════════════════════ -->
+    <div id="shutter" aria-hidden="true">
+        <div class="shutter-strip"></div>
+        <div class="shutter-strip"></div>
+        <div class="shutter-strip"></div>
+        <div class="shutter-strip"></div>
+        <div class="shutter-strip"></div>
+    </div>
+
+    <!-- ═══════════════════════════════════ NAVIGATION ═══════════════════════════════════ -->
+    <nav id="main-nav">
+        <!-- Top state (visible at top of page) -->
+        <div class="nav-state nav-state-top">
+            <div class="nav-left">
+                <a href="index.html" class="nav-pill magnetic">Home
+                    <svg viewBox="0 0 10 10">
+                        <path d="M2 8L8 2M8 2H3M8 2V7" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </a>
+                <a href="index.html#services" class="nav-pill magnetic">Services
+                    <svg viewBox="0 0 10 10">
+                        <path d="M2 8L8 2M8 2H3M8 2V7" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </a>
+                <a href="index.html#projects" class="nav-pill magnetic">Portfolio
+                    <svg viewBox="0 0 10 10">
+                        <path d="M2 8L8 2M8 2H3M8 2V7" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </a>
+                <a href="index.html#tagline" class="nav-pill magnetic">About
+                    <svg viewBox="0 0 10 10">
+                        <path d="M2 8L8 2M8 2H3M8 2V7" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </a>
+            </div>
+
+            <div class="nav-right">
+                <a href="#premium-footer" class="nav-pill magnetic">Contact
+                    <svg viewBox="0 0 10 10">
+                        <path d="M2 8L8 2M8 2H3M8 2V7" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </a>
+                <button class="nav-burger" id="nav-mtoggle" aria-label="Open menu" aria-expanded="false">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Scrolled state (visible after scrolling) -->
+        <div class="nav-state nav-state-scrolled">
+            <a href="#hero" class="nav-logo" aria-label="Capture Culture — Home">Capture Culture</a>
+            <div class="ns-right">
+                <a href="#services" class="nav-pill magnetic">Services
+                    <svg viewBox="0 0 10 10">
+                        <path d="M2 8L8 2M8 2H3M8 2V7" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </a>
+                <a href="#projects" class="nav-pill magnetic">Portfolio
+                    <svg viewBox="0 0 10 10">
+                        <path d="M2 8L8 2M8 2H3M8 2V7" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </a>
+                <a href="#tagline" class="nav-pill magnetic">About
+                    <svg viewBox="0 0 10 10">
+                        <path d="M2 8L8 2M8 2H3M8 2V7" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </a>
+                <a href="#premium-footer" class="nav-pill magnetic">Contact
+                    <svg viewBox="0 0 10 10">
+                        <path d="M2 8L8 2M8 2H3M8 2V7" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </a>
+                <button class="nav-burger" aria-label="Open menu" aria-expanded="false">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ═══════════════════════════════════ MOBILE MENU ═══════════════════════════════════ -->
+    <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+        <div class="mm-head">
+            <span class="mm-logo">Capture Culture</span>
+            <button class="mm-close" id="mm-close" aria-label="Close menu">
+                <svg viewBox="0 0 16 16">
+                    <path d="M3 3l10 10M13 3L3 13" stroke-linecap="round" stroke-width="1.5"></path>
+                </svg>
+            </button>
+        </div>
+        <nav class="mm-links">
+            <a href="#hero" class="mm-link">Home</a>
+            <a href="#reel" class="mm-link">Showreel</a>
+            <a href="#services" class="mm-link">Services</a>
+            <a href="#projects" class="mm-link">Portfolio</a>
+            <!-- <a href="#testimonials" class="mm-link">Testimonials</a> -->
+            <a href="#premium-footer" class="mm-link">Contact</a>
+        </nav>
+        <div class="mm-foot">
+            <p class="mm-contact">
+                <a href="mailto:hello@captureculture.com">hello@captureculture.com</a><br>
+                <a href="tel:+919876543210">+91 98765 43210</a>
+            </p>
+        </div>
+    </div>
+
+    <main class="main-wrapper project-page-wrapper" id="project-main-wrapper">
+        <section class="project-detail-hero">
+            <div class="project-detail-media" id="project-media-container">
+                <!-- Video or large thumbnail injected here -->
+            </div>
+        </section>
+
+        <section class="project-detail-content">
+            <div class="project-detail-main">
+                <h1 id="project-title-display">Project Title</h1>
+                <div class="project-detail-desc" id="project-desc-display">
+                    <p>Project description goes here...</p>
+                </div>
+            </div>
+            
+            <aside class="project-detail-sidebar">
+                <div class="pd-meta-item">
+                    <span class="pd-meta-label">Category</span>
+                    <span class="pd-meta-value" id="project-category-display">--</span>
+                </div>
+                <div class="pd-meta-item" id="pd-client-wrapper" style="display: none;">
+                    <span class="pd-meta-label">Client</span>
+                    <span class="pd-meta-value" id="project-client-display">--</span>
+                </div>
+                <div class="pd-meta-item" id="pd-year-wrapper" style="display: none;">
+                    <span class="pd-meta-label">Year</span>
+                    <span class="pd-meta-value" id="project-year-display">--</span>
+                </div>
+                <div class="pd-meta-item" id="pd-tags-wrapper" style="display: none;">
+                    <span class="pd-meta-label">Tags</span>
+                    <span class="pd-meta-value" id="project-tags-display">--</span>
+                </div>
+            </aside>
+        </section>
+    </main>
+
+    <!-- ═══════════════════════════════════ CINEMATIC FOOTER ═══════════════════════════════════ -->
+    <footer id="premium-footer">
+        <div class="pf-glow"></div>
+
+        <div class="pf-marquee-wrap">
+            <div class="footer-marquee-track">
+                <span class="fm-unit">GET IN TOUCH <span class="fm-sep">/</span></span>
+                <span class="fm-unit">GET IN TOUCH <span class="fm-sep">/</span></span>
+                <span class="fm-unit">GET IN TOUCH <span class="fm-sep">/</span></span>
+                <span class="fm-unit">GET IN TOUCH <span class="fm-sep">/</span></span>
+            </div>
+        </div>
+
+        <div class="pf-inner">
+            <div class="pf-grid">
+                <!-- Left -->
+                <div class="pf-col pf-brand">
+                    <div class="pf-logo">Capture Culture</div>
+                    <div class="pf-statement">
+                        Filmmaker.<br>
+                        Creative Developer.<br>
+                        Visual Storyteller.
+                    </div>
+                </div>
+
+                <!-- Middle -->
+                <div class="pf-col pf-nav">
+                    <h4 class="pf-col-title">Navigation</h4>
+                    <nav class="pf-links">
+                        <a href="#hero" class="magnetic">Home</a>
+                        <a href="#tagline" class="magnetic">About</a>
+                        <a href="#projects" class="magnetic">Portfolio</a>
+                        <a href="#services" class="magnetic">Services</a>
+                        <a href="mailto:hello@captureculture.com" class="magnetic">Contact</a>
+                    </nav>
+                </div>
+
+                <!-- Right -->
+                <div class="pf-col pf-contact">
+                    <h4 class="pf-col-title">Socials</h4>
+                    <div class="pf-social-grid">
+                        <a href="#" class="magnetic">Instagram</a>
+                        <a href="#" class="magnetic">YouTube</a>
+                        <a href="#" class="magnetic">LinkedIn</a>
+                        <a href="#" class="magnetic">Behance</a>
+                        <a href="#" class="magnetic">GitHub</a>
+                    </div>
+                    <div class="pf-contact-info">
+                        <a href="mailto:hello@captureculture.com" class="magnetic">hello@captureculture.com</a><br>
+                        <a href="tel:+919876543210" class="magnetic">+91 98765 43210</a><br>
+                        <span>Mumbai, India</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pf-bottom">
+                <div class="pf-copy">© 2026 Capture Culture. All rights reserved.</div>
+                <button class="back-to-top magnetic pf-btt" aria-label="Back to top">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 15l-6-6-6 6" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Video Modal -->
+    <div id="video-modal" class="video-modal" aria-hidden="true">
+        <div class="video-modal-backdrop"></div>
+        <button class="video-modal-close magnetic" aria-label="Close video">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+        <div class="video-modal-container">
+            <!-- Iframe injected by JS -->
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════ SCRIPTS ═══════════════════════════════════ -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <!-- Supabase integration -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+
+    <script src="js/main.js"></script>
+    <script src="js/project.js"></script>
+</body>
+
+</html>

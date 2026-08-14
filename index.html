@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script>
+        if (sessionStorage.getItem('shutterTransition')) {
+            document.documentElement.classList.add('shutter-loading');
+        }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capture Culture — We Don't Just Shoot, We Tell Stories</title>
+    <meta name="description"
+        content="Capture Culture is a creative videography studio specializing in weddings, commercials, music videos, real estate drone footage, and documentary filmmaking. Let's tell your story.">
+    <meta property="og:title" content="Capture Culture — Creative Videography Studio for you">
+    <meta property="og:description"
+        content="We don't just shoot — we tell stories. Weddings, commercials, music videos, drone, and documentary filmmaking.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+
+<body>
+
+    <!-- ═══════════════════════════════════ CUSTOM CURSOR ═══════════════════════════════════ -->
+    <div id="cursor">
+        <span class="cursor-text"></span>
+    </div>
+
+    <!-- ═══════════════════════════════════ CINEMATIC PRELOADER ═══════════════════════════════════ -->
+    <div id="premium-preloader">
+        <svg class="preloader-svg" viewBox="0 0 1200 400" preserveAspectRatio="xMidYMid meet">
+            <defs>
+                <clipPath id="fill-clip">
+                    <rect class="fill-clip-rect" x="0" y="0" width="0" height="400"></rect>
+                </clipPath>
+            </defs>
+
+            <!-- Outlined Text -->
+            <text class="preloader-text preloader-text-outline" x="600" y="200" text-anchor="middle"
+                dominant-baseline="central">CAPTURE CULTURE</text>
+
+            <!-- Solid Text (Masked) -->
+            <text class="preloader-text preloader-text-solid" x="600" y="200" text-anchor="middle"
+                dominant-baseline="central" clip-path="url(#fill-clip)">CAPTURE CULTURE</text>
+        </svg>
+    </div>
+
+    <!-- ═══════════════════════════════════ SHUTTER REVEAL ═══════════════════════════════════ -->
+    <div id="shutter" aria-hidden="true">
+        <div class="shutter-strip"></div>
+        <div class="shutter-strip"></div>
+        <div class="shutter-strip"></div>
+        <div class="shutter-strip"></div>
+        <div class="shutter-strip"></div>
+    </div>
+
+    <!-- ═══════════════════════════════════ NAVIGATION ═══════════════════════════════════ -->
+    <nav id="main-nav">
+        <!-- Top state (visible at top of page) -->
+        <div class="nav-state nav-state-top">
+            <div class="nav-left">
+                <a href="#services" class="nav-pill magnetic">Services
+                    <svg viewBox="0 0 10 10">
+                        <path d="M2 8L8 2M8 2H3M8 2V7" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </a>
+                <a href="#projects" class="nav-pill magnetic">Portfolio
+                    <svg viewBox="0 0 10 10">
+                        <path d="M2 8L8 2M8 2H3M8 2V7" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </a>
+                <a href="#tagline" class="nav-pill magnetic">About
+                    <svg viewBox="0 0 10 10">
+                        <path d="M2 8L8 2M8 2H3M8 2V7" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </a>
+            </div>
+
+            <div class="nav-right">
+                <a href="#premium-footer" class="nav-pill magnetic">Contact
+                    <svg viewBox="0 0 10 10">
+                        <path d="M2 8L8 2M8 2H3M8 2V7" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </a>
+                <button class="nav-burger" id="nav-mtoggle" aria-label="Open menu" aria-expanded="false">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Scrolled state (visible after scrolling) -->
+        <div class="nav-state nav-state-scrolled">
+            <a href="#hero" class="nav-logo" aria-label="Capture Culture — Home">Capture Culture</a>
+            <div class="ns-right">
+                <a href="#services" class="nav-pill magnetic">Services
+                    <svg viewBox="0 0 10 10">
+                        <path d="M2 8L8 2M8 2H3M8 2V7" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </a>
+                <a href="#projects" class="nav-pill magnetic">Portfolio
+                    <svg viewBox="0 0 10 10">
+                        <path d="M2 8L8 2M8 2H3M8 2V7" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </a>
+                <a href="#tagline" class="nav-pill magnetic">About
+                    <svg viewBox="0 0 10 10">
+                        <path d="M2 8L8 2M8 2H3M8 2V7" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </a>
+                <a href="#premium-footer" class="nav-pill magnetic">Contact
+                    <svg viewBox="0 0 10 10">
+                        <path d="M2 8L8 2M8 2H3M8 2V7" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </a>
+                <button class="nav-burger" aria-label="Open menu" aria-expanded="false">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ═══════════════════════════════════ MOBILE MENU ═══════════════════════════════════ -->
+    <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+        <div class="mm-head">
+            <span class="mm-logo">Capture Culture</span>
+            <button class="mm-close" id="mm-close" aria-label="Close menu">
+                <svg viewBox="0 0 16 16">
+                    <path d="M3 3l10 10M13 3L3 13" stroke-linecap="round" stroke-width="1.5"></path>
+                </svg>
+            </button>
+        </div>
+        <nav class="mm-links">
+            <a href="#hero" class="mm-link">Home</a>
+            <a href="#reel" class="mm-link">Showreel</a>
+            <a href="#services" class="mm-link">Services</a>
+            <a href="#projects" class="mm-link">Portfolio</a>
+            <!-- <a href="#testimonials" class="mm-link">Testimonials</a> -->
+            <a href="#premium-footer" class="mm-link">Contact</a>
+        </nav>
+        <div class="mm-foot">
+            <p class="mm-contact">
+                <a href="mailto:hello@captureculture.com">hello@captureculture.com</a><br>
+                <a href="tel:+919876543210">+91 98765 43210</a>
+            </p>
+        </div>
+    </div>
+
+    <main class="main-wrapper">
+        <!-- ═══════════════════════════════════ HERO SECTION ═══════════════════════════════════ -->
+        <section id="hero">
+            <h1 class="sr-only">Capture Culture — Creative Videography Studio</h1>
+
+            <!-- Back layer stickers (behind marquee) -->
+            <div class="hero-stickers hero-stickers-back">
+                <span class="hsticker" data-speed="0.2" style="--x:6;--y:18;--w:13;--r:-6deg" title="Drag me!">
+                    <img src="assets/images/b2c shirt video.png" alt="Vintage film camera" draggable="false">
+                </span>
+                <span class="hsticker" data-speed="0.35" style="--x:74;--y:10;--w:14;--r:6deg" title="Drag me!">
+                    <img src="assets/images/grudge.png" alt="Film reel" draggable="false">
+                </span>
+                <span class="hsticker hide-mobile" data-speed="0.15" style="--x:86;--y:72;--w:11;--r:3deg"
+                    title="Drag me!">
+                    <img src="assets/images/HAR DIN vertical.png" alt="Camera lens" draggable="false">
+                </span>
+            </div>
+
+            <!-- Marquee wordmark -->
+            <div class="hero-stage">
+                <div class="hero-marquee">
+                    <div class="hero-track">
+                        <span class="hm-unit">CAPTURE CULTURE</span>
+                        <span class="hm-unit-star">✦</span>
+                        <span class="hm-unit">CAPTURE CULTURE</span>
+                        <span class="hm-unit-star">✦</span>
+                        <span class="hm-unit">CAPTURE CULTURE</span>
+                        <span class="hm-unit-star">✦</span>
+                        <span class="hm-unit">CAPTURE CULTURE</span>
+                        <span class="hm-unit-star">✦</span>
+                    </div>
+                </div>
+                <p class="hero-tagline">We Don't Just Shoot — We Tell your Stories</p>
+            </div>
+
+            <!-- Front layer stickers (in front of marquee) -->
+            <div class="hero-stickers hero-stickers-front">
+                <span class="hsticker" data-speed="0.25" style="--x:12;--y:58;--w:14;--r:-4deg" title="Drag me!">
+                    <img src="assets/images/My Protein thumbnail.png" alt="Film clapperboard" draggable="false">
+                </span>
+                <span class="hsticker" data-speed="0.18" style="--x:62;--y:64;--w:13;--r:5deg" title="Drag me!">
+                    <img src="assets/images/runner.png" alt="Drone" draggable="false">
+                </span>
+                <!-- <span class="hsticker hsticker-badge" data-speed="0.32" style="--x:78;--y:52;--w:12;--r:-8deg"
+                title="Talk with us!">
+                <a href="#footer-cta" class="sticker-badge-link magnetic"
+                    aria-label="Talk with us - Contact Capture Culture">
+                    <img src="assets/images/sticker-badge.png" alt="Capture Culture Talk With Us Badge" draggable="false">
+                </a>
+            </span> -->
+            </div>
+
+            <!-- Hero bottom bar -->
+            <div class="hero-meta">
+                <a href="#reel" class="hero-meta-link magnetic">Watch our showreel ↗</a>
+                <div class="hero-meta-right">
+                    <a href="#reel" class="hero-scroll">(SCROLL)</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════ SHOWREEL ═══════════════════════════════════ -->
+        <section id="reel">
+            <div class="reel-wrap reveal">
+                <img class="reel-video" src="assets/images/grudge.png" alt="Showreel placeholder">
+                <div class="reel-tag">CC® — Showreel</div>
+                <div class="reel-year">©2026</div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════ TAGLINE / ABOUT ═══════════════════════════════════ -->
+        <section id="tagline" data-watch="true">
+            <canvas id="tagline-canvas" aria-hidden="true"></canvas>
+            <p id="tagline-text">We are a creative studio specializing in <em>cinematic storytelling, visual artistry,
+                    and
+                    bold filmmaking.</em> We help brands and people turn moments into unforgettable visual experiences.
+            </p>
+        </section>
+        <!-- ═══════════════════════════════════ SERVICES ═══════════════════════════════════ -->
+        <section id="services">
+            <p class="section-label reveal">What We Do</p>
+
+            <!-- Floating cursor image preview (follows mouse) -->
+            <div class="services-image" id="services-image" aria-hidden="true">
+                <img src="" alt="" id="services-preview-img">
+            </div>
+
+            <div class="services-layout">
+                <!-- Left: Service headings list -->
+
+                <div class="services-list-wrap">
+                    <div class="services-list">
+
+                        <div class="service-item" data-service="weddings"
+                            data-image="assets/images/portfolio-wedding.jpg" data-heading="Weddings &amp; Events"
+                            data-subtitle="Capturing your most precious moments."
+                            data-desc="We believe every love story is unique. Our cinematic approach to wedding and event videography focuses on authentic emotions, stunning visuals, and storytelling that you'll relive for generations. From intimate ceremonies to grand celebrations."
+                            data-tags="Cinematic Highlights,Full Day Coverage,Drone Aerials,Same-Day Edits"
+                            role="button" tabindex="0" aria-expanded="false">
+                            <div class="service-item-header">
+                                <span class="num">01</span>
+                                <h3>Weddings &amp; Events</h3>
+                                <svg class="arr" viewBox="0 0 24 24">
+                                    <path d="M6 18L18 6M18 6H8M18 6V16" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="1.5"></path>
+                                </svg>
+                                <div class="service-progress"></div>
+                            </div>
+                        </div>
+
+                        <div class="service-item" data-service="commercial"
+                            data-image="assets/images/portfolio-commercial.jpg" data-heading="Commercial Films"
+                            data-subtitle="Elevating your brand through visual storytelling."
+                            data-desc="From product launches to brand anthems, we craft commercial content that doesn't just look beautiful — it converts. We work closely with brands to understand their vision and translate it into compelling video that resonates with their audience."
+                            data-tags="Brand Films,Product Videos,Social Content,Corporate Films" role="button"
+                            tabindex="0" aria-expanded="false">
+                            <div class="service-item-header">
+                                <span class="num">02</span>
+                                <h3>Commercial Films</h3>
+                                <svg class="arr" viewBox="0 0 24 24">
+                                    <path d="M6 18L18 6M18 6H8M18 6V16" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="1.5"></path>
+                                </svg>
+                                <div class="service-progress"></div>
+                            </div>
+                        </div>
+
+                        <div class="service-item" data-service="music"
+                            data-image="assets/images/portfolio-musicvideo.jpg" data-heading="Music Videos"
+                            data-subtitle="Bringing sound to life through visuals."
+                            data-desc="Music videos are where we push creative boundaries the furthest. We collaborate with artists to develop bold visual concepts, striking color palettes, and dynamic cinematography that amplifies the music's emotional impact."
+                            data-tags="Concept Development,Performance Videos,Lyric Videos,Live Sessions" role="button"
+                            tabindex="0" aria-expanded="false">
+                            <div class="service-item-header">
+                                <span class="num">03</span>
+                                <h3>Music Videos</h3>
+                                <svg class="arr" viewBox="0 0 24 24">
+                                    <path d="M6 18L18 6M18 6H8M18 6V16" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="1.5"></path>
+                                </svg>
+                                <div class="service-progress"></div>
+                            </div>
+                        </div>
+
+                        <div class="service-item" data-service="realestate"
+                            data-image="assets/images/portfolio-realestate.jpg" data-heading="Real Estate &amp; Drone"
+                            data-subtitle="Showcasing properties from every angle."
+                            data-desc="Our aerial and ground-level cinematography transforms property listings into cinematic experiences. Using professional drones and stabilized cameras, we capture the full scale, beauty, and lifestyle potential of any space."
+                            data-tags="Aerial Drone Shots,Virtual Tours,Twilight Shoots,Agent Profiles" role="button"
+                            tabindex="0" aria-expanded="false">
+                            <div class="service-item-header">
+                                <span class="num">04</span>
+                                <h3>Real Estate &amp; Drone</h3>
+                                <svg class="arr" viewBox="0 0 24 24">
+                                    <path d="M6 18L18 6M18 6H8M18 6V16" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="1.5"></path>
+                                </svg>
+                                <div class="service-progress"></div>
+                            </div>
+                        </div>
+
+                        <div class="service-item" data-service="documentary"
+                            data-image="assets/images/portfolio-documentary.jpg" data-heading="Documentary"
+                            data-subtitle="Real stories, real impact."
+                            data-desc="We are passionate about documentaries that shine a light on important stories. Whether it's a personal journey, a social cause, or an organizational narrative, we bring empathy, patience, and artistic vision to every documentary project."
+                            data-tags="Short Documentaries,Interview Features,Event Docs,Mini-Series" role="button"
+                            tabindex="0" aria-expanded="false">
+                            <div class="service-item-header">
+                                <span class="num">05</span>
+                                <h3>Documentary</h3>
+                                <svg class="arr" viewBox="0 0 24 24">
+                                    <path d="M6 18L18 6M18 6H8M18 6V16" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="1.5"></path>
+                                </svg>
+                                <div class="service-progress"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Right: Detail panel with word-rise animation -->
+                <div class="services-detail-panel" id="services-detail-panel" aria-live="polite">
+                    <div class="sdp-inner">
+                        <div class="sdp-content">
+                            <h4 class="sdp-subtitle" id="sdp-subtitle"></h4>
+                            <p class="sdp-desc" id="sdp-desc"></p>
+                            <div class="services-tags sdp-tags" id="sdp-tags"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+        <!-- ═══════════════════════════════════ PORTFOLIO / PROJECTS ═══════════════════════════════════ -->
+        <section id="projects">
+            <div class="projects-head">
+                <p class="section-label reveal">Featured Work</p>
+                <div class="project-filters reveal" id="project-filters">
+                    <a href="work.html" class="filter-btn active magnetic" style="text-decoration: none;">Show More
+                        Work</a>
+                </div>
+            </div>
+            <div class="projects-pin-wrap">
+                <div id="drag-cursor" aria-hidden="true">
+
+                    <div class="cursor-pill">
+                        <span class="arr">&lt;</span> DRAG <span class="arr">&gt;</span>
+                    </div>
+                </div>
+                <div class="projects-track" id="dynamic-projects-track">
+                    <!-- Projects will be injected here dynamically via main.js -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════ TESTIMONIALS ═══════════════════════════════════ -->
+        <!-- 
+    <section id="testimonials">
+        <p class="section-label reveal">What People Say</p>
+
+        <div class="testimonials-marquee" aria-hidden="true">
+            <div class="testimonials-track">
+                <span class="client-name">Ravi & Priya</span>
+                <span class="client-name">Urban Brew Co.</span>
+                <span class="client-name">DJ Karma</span>
+                <span class="client-name">Skyline Realty</span>
+                <span class="client-name">Green Earth Org</span>
+                <span class="client-name">Studio Luxe</span>
+                <span class="client-name">The Mehtas</span>
+                <span class="client-name">FreshTone Records</span>
+                <span class="client-name">Ravi & Priya</span>
+                <span class="client-name">Urban Brew Co.</span>
+                <span class="client-name">DJ Karma</span>
+                <span class="client-name">Skyline Realty</span>
+                <span class="client-name">Green Earth Org</span>
+                <span class="client-name">Studio Luxe</span>
+                <span class="client-name">The Mehtas</span>
+                <span class="client-name">FreshTone Records</span>
+            </div>
+        </div>
+
+        <div class="testimonial-cards">
+            <div class="testimonial-card reveal">
+                <p class="testimonial-quote">"Capture Culture turned our wedding into a cinematic masterpiece. Every
+                    time
+                    we watch our film, we're transported right back to that magical day. Absolutely incredible work."
+                </p>
+                <p class="testimonial-author">Ravi & Priya Sharma</p>
+                <p class="testimonial-role">Wedding Film · Mumbai</p>
+            </div>
+            <div class="testimonial-card reveal">
+                <p class="testimonial-quote">"The commercial they produced for our brand launch exceeded all
+                    expectations. The quality, the storytelling, the attention to detail — it's like working with a
+                    top-tier agency."</p>
+                <p class="testimonial-author">Ananya Desai</p>
+                <p class="testimonial-role">Brand Director · Urban Brew Co.</p>
+            </div>
+            <div class="testimonial-card reveal">
+                <p class="testimonial-quote">"Working with Capture Culture on my music video was a game-changer. They
+                    brought a
+                    vision I couldn't even fully articulate to life. Creative, professional, and genuinely fun to work
+                    with."</p>
+                <p class="testimonial-author">DJ Karma</p>
+                <p class="testimonial-role">Music Video · Independent Artist</p>
+            </div>
+        </div>
+    </section>
+    -->
+
+    </main>
+
+    <!-- ═══════════════════════════════════ CINEMATIC FOOTER ═══════════════════════════════════ -->
+    <footer id="premium-footer">
+        <div class="pf-glow"></div>
+
+        <div class="pf-marquee-wrap">
+            <div class="footer-marquee-track">
+                <span class="fm-unit">GET IN TOUCH <span class="fm-sep">/</span></span>
+                <span class="fm-unit">GET IN TOUCH <span class="fm-sep">/</span></span>
+                <span class="fm-unit">GET IN TOUCH <span class="fm-sep">/</span></span>
+                <span class="fm-unit">GET IN TOUCH <span class="fm-sep">/</span></span>
+            </div>
+        </div>
+
+        <div class="pf-inner">
+            <div class="pf-grid">
+                <!-- Left -->
+                <div class="pf-col pf-brand">
+                    <div class="pf-logo">Capture Culture</div>
+                    <div class="pf-statement">
+                        Filmmaker.<br>
+                        Creative Developer.<br>
+                        Visual Storyteller.
+                    </div>
+                </div>
+
+                <!-- Middle -->
+                <div class="pf-col pf-nav">
+                    <h4 class="pf-col-title">Navigation</h4>
+                    <nav class="pf-links">
+                        <a href="#hero" class="magnetic">Home</a>
+                        <a href="#tagline" class="magnetic">About</a>
+                        <a href="#projects" class="magnetic">Portfolio</a>
+                        <a href="#services" class="magnetic">Services</a>
+                        <a href="mailto:hello@captureculture.com" class="magnetic">Contact</a>
+                    </nav>
+                </div>
+
+                <!-- Right -->
+                <div class="pf-col pf-contact">
+                    <h4 class="pf-col-title">Socials</h4>
+                    <div class="pf-social-grid">
+                        <a href="#" class="magnetic">Instagram</a>
+                        <a href="#" class="magnetic">YouTube</a>
+                        <a href="#" class="magnetic">LinkedIn</a>
+                        <a href="#" class="magnetic">Behance</a>
+                        <a href="#" class="magnetic">GitHub</a>
+                    </div>
+                    <div class="pf-contact-info">
+                        <a href="mailto:hello@captureculture.com" class="magnetic">hello@captureculture.com</a><br>
+                        <a href="tel:+919876543210" class="magnetic">+91 98765 43210</a><br>
+                        <span>Mumbai, India</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pf-bottom">
+                <div class="pf-copy">© 2026 Capture Culture. All rights reserved.</div>
+                <button class="back-to-top magnetic pf-btt" aria-label="Back to top">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 15l-6-6-6 6" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Video Modal -->
+    <div id="video-modal" class="video-modal" aria-hidden="true">
+        <div class="video-modal-backdrop"></div>
+        <button class="video-modal-close magnetic" aria-label="Close video">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+        <div class="video-modal-container">
+            <!-- Iframe injected by JS -->
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════ SCRIPTS ═══════════════════════════════════ -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <!-- Supabase integration -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+
+    <script src="js/main.js"></script>
+</body>
+
+</html>
