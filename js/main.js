@@ -56,8 +56,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Custom cursor effect for About (#tagline-text)
         const taglineTextNode = document.getElementById('tagline-text');
         if (taglineTextNode) {
-            taglineTextNode.addEventListener('mouseenter', () => cursor.classList.add('about-hover'));
-            taglineTextNode.addEventListener('mouseleave', () => cursor.classList.remove('about-hover'));
+            // Disabled per user request
+            // taglineTextNode.addEventListener('mouseenter', () => cursor.classList.add('about-hover'));
+            // taglineTextNode.addEventListener('mouseleave', () => cursor.classList.remove('about-hover'));
         }
 
         const reelWrap = document.querySelector('.reel-wrap');
@@ -500,12 +501,15 @@ document.addEventListener('DOMContentLoaded', () => {
         let animationFrameId;
         let isInitialized = false;
 
+        const pad = 150; // Extra space for particles to fly without getting clipped
         const resizeCanvas = () => {
             const rect = taglineSection.getBoundingClientRect();
-            canvas.width = rect.width * dpr;
-            canvas.height = rect.height * dpr;
-            canvas.style.width = `${rect.width}px`;
-            canvas.style.height = `${rect.height}px`;
+            canvas.width = (rect.width + pad * 2) * dpr;
+            canvas.height = (rect.height + pad * 2) * dpr;
+            canvas.style.width = `${rect.width + pad * 2}px`;
+            canvas.style.height = `${rect.height + pad * 2}px`;
+            canvas.style.left = `-${pad}px`;
+            canvas.style.top = `-${pad}px`;
         };
 
         const initParticles = () => {
@@ -554,8 +558,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const charRect = span.getBoundingClientRect();
                 const style = window.getComputedStyle(span);
 
-                const x = charRect.left - rect.left;
-                const y = charRect.top - rect.top;
+                const x = charRect.left - rect.left + pad;
+                const y = charRect.top - rect.top + pad;
 
                 ctx.font = `${style.fontStyle} ${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
                 ctx.fillStyle = style.color;
@@ -572,11 +576,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = imageData.data;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            const step = window.innerWidth < 768 ? 2 : 1;
-            // On a 2x retina display, step=1 means creating particles for every physical screen pixel!
-            // If it's too slow on retina screens, we could increase step, but since the physics loop 
-            // is highly optimized, it should run smoothly.
-
+            // Increase step value drastically to fix lag with massive typography
+            // step = 4 means 1/16th the particles compared to step = 1
+            const step = window.innerWidth < 768 ? 3 : 5;
             for (let y = 0; y < canvas.height; y += step) {
                 for (let x = 0; x < canvas.width; x += step) {
                     const index = (y * canvas.width + x) * 4;
@@ -1036,6 +1038,25 @@ document.addEventListener('DOMContentLoaded', () => {
                     e.stopPropagation();
                 }
             }, true);
+
+            // Carousel Buttons Logic
+            const btnLeft = document.querySelector('.cb-left');
+            const btnRight = document.querySelector('.cb-right');
+            
+            if (btnLeft) {
+                btnLeft.addEventListener('pointerdown', (e) => e.stopPropagation());
+                btnLeft.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    velocity = 80; // Swipe right (move track left visually)
+                });
+            }
+            if (btnRight) {
+                btnRight.addEventListener('pointerdown', (e) => e.stopPropagation());
+                btnRight.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    velocity = -80; // Swipe left (move track right visually)
+                });
+            }
 
             // Physics Ticker Loop
             const update = () => {

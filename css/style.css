@@ -759,10 +759,11 @@ footer {
    8. Tagline / About Section
    ========================================================================== */
 #tagline {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 8rem 1rem;
-  text-align: left;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 10rem 2vw;
+  text-align: justify;
   position: relative;
 }
 
@@ -779,12 +780,15 @@ footer {
 }
 
 #tagline-text {
-
-  font-size: clamp(3.5rem, 2.5vw, 2.8rem);
-  line-height: 1.55;
+  font-size: clamp(2.5rem, 6vw, 7rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
   margin-bottom: 3rem;
   color: var(--text-primary);
   opacity: 0;
+  text-align: justify;
+  text-align-last: justify;
 }
 
 #tagline-text em {
@@ -1175,7 +1179,8 @@ footer {
 
 .projects-pin-wrap {
   width: 100%;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: visible;
 }
 
 .projects-track {
@@ -1193,7 +1198,7 @@ footer {
 
 @media (min-width: 768px) {
   #projects {
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -1203,7 +1208,8 @@ footer {
     display: flex;
     align-items: center;
     width: 100%;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: visible;
     position: relative;
     touch-action: pan-y;
   }
@@ -1233,6 +1239,56 @@ footer {
     width: auto;
     flex-shrink: 0;
   }
+}
+
+/* Carousel Buttons */
+.carousel-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  padding: 40px 0;
+}
+
+.carousel-btn {
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: white;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer !important;
+  transition: all 0.3s ease;
+  opacity: 1;
+}
+
+@media (min-width: 768px) {
+}
+
+@media (max-width: 768px) {
+  .carousel-btn {
+    opacity: 1;
+    width: 40px;
+    height: 40px;
+  }
+}
+
+.carousel-btn:hover {
+  background: var(--text-primary);
+  color: var(--bg-primary);
+  transform: scale(1.1);
+}
+
+.carousel-btn.cb-left {
+}
+
+.carousel-btn.cb-right {
 }
 
 /* Custom DRAG cursor styles */
