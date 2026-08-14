@@ -513,6 +513,8 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         const initParticles = () => {
+            const isTouchDevice = window.matchMedia("(pointer: coarse)").matches || window.innerWidth <= 1024;
+
             particles = [];
             resizeCanvas();
             const rect = taglineSection.getBoundingClientRect();
@@ -605,7 +607,15 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             isInitialized = true;
-            animate();
+            if (!isTouchDevice) {
+                animate();
+            } else {
+                // For touch devices, render the static pixelated text once without starting the animation loop
+                particles.forEach(p => {
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(p.x, p.y, p.size, p.size);
+                });
+            }
         };
 
         const animate = () => {
@@ -669,23 +679,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         taglineSection.addEventListener('mousemove', (e) => {
+            if (!isInitialized) return;
             const rect = canvas.getBoundingClientRect();
             mouse.x = (e.clientX - rect.left) * dpr;
             mouse.y = (e.clientY - rect.top) * dpr;
         });
 
         taglineSection.addEventListener('mouseleave', () => {
-            mouse.x = -1000;
-            mouse.y = -1000;
-        });
-
-        taglineSection.addEventListener('touchmove', (e) => {
-            const rect = canvas.getBoundingClientRect();
-            mouse.x = (e.touches[0].clientX - rect.left) * dpr;
-            mouse.y = (e.touches[0].clientY - rect.top) * dpr;
-        }, { passive: true });
-
-        taglineSection.addEventListener('touchend', () => {
+            if (!isInitialized) return;
             mouse.x = -1000;
             mouse.y = -1000;
         });
