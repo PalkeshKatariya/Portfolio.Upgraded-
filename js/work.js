@@ -111,9 +111,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const filterValue = btn.getAttribute('data-filter');
 
-                // Animate grid out
-                if (typeof gsap !== 'undefined') {
-                    gsap.to('.work-card', {
+                const cards = document.querySelectorAll('.work-card');
+                if (typeof gsap !== 'undefined' && cards.length > 0) {
+                    gsap.to(cards, {
                         opacity: 0,
                         y: 20,
                         duration: 0.3,

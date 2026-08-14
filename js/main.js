@@ -500,6 +500,8 @@ document.addEventListener('DOMContentLoaded', () => {
         let mouse = { x: -1000, y: -1000, radius: (window.innerWidth < 768 ? 70 : 90) * dpr };
         let animationFrameId;
         let isInitialized = false;
+        let isTouchDevice = false;
+        let isOffscreen = false;
 
         const pad = 150; // Extra space for particles to fly without getting clipped
         const resizeCanvas = () => {
@@ -513,7 +515,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         const initParticles = () => {
-            const isTouchDevice = window.matchMedia("(pointer: coarse)").matches || window.innerWidth <= 1024;
+            isTouchDevice = window.matchMedia("(pointer: coarse)").matches || window.innerWidth <= 1024;
 
             particles = [];
             resizeCanvas();
@@ -579,8 +581,8 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             // Increase step value drastically to fix lag with massive typography
-            // step = 4 means 1/16th the particles compared to step = 1
-            const step = window.innerWidth < 768 ? 3 : 5;
+            // Increase step value to drastically reduce particle count for performance
+            const step = window.innerWidth < 768 ? 4 : 6;
             for (let y = 0; y < canvas.height; y += step) {
                 for (let x = 0; x < canvas.width; x += step) {
                     const index = (y * canvas.width + x) * 4;
@@ -607,10 +609,15 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             isInitialized = true;
+            isInitialized = true;
             if (!isTouchDevice) {
                 animate();
             } else {
-                // For touch devices, render the static pixelated text once without starting the animation loop
+                // Initialize canvas as hidden for touch devices
+                canvas.style.opacity = '0';
+                canvas.style.transition = 'opacity 0.4s ease';
+                taglineText.style.transition = 'opacity 0.4s ease';
+                
                 particles.forEach(p => {
                     ctx.fillStyle = p.color;
                     ctx.fillRect(p.x, p.y, p.size, p.size);
@@ -619,27 +626,31 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         const animate = () => {
-            if (!isInitialized) return;
+            if (!isInitialized || isOffscreen) return;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             for (let i = 0; i < particles.length; i++) {
                 let p = particles[i];
                 let dx = mouse.x - p.x;
                 let dy = mouse.y - p.y;
-                let distance = Math.sqrt(dx * dx + dy * dy);
 
-                if (distance < mouse.radius) {
-                    let forceDirectionX = dx / distance;
-                    let forceDirectionY = dy / distance;
-                    let force = (mouse.radius - distance) / mouse.radius;
+                // Fast bounding box check avoids expensive square root calculations
+                if (Math.abs(dx) < mouse.radius && Math.abs(dy) < mouse.radius) {
+                    let distance = Math.sqrt(dx * dx + dy * dy);
 
-                    // Push away
-                    p.vx -= forceDirectionX * force * 4;
-                    p.vy -= forceDirectionY * force * 4;
+                    if (distance < mouse.radius) {
+                        let forceDirectionX = dx / distance;
+                        let forceDirectionY = dy / distance;
+                        let force = (mouse.radius - distance) / mouse.radius;
 
-                    // Orbit slightly
-                    p.vx += forceDirectionY * force * 1.5;
-                    p.vy -= forceDirectionX * force * 1.5;
+                        // Push away
+                        p.vx -= forceDirectionX * force * 4;
+                        p.vy -= forceDirectionY * force * 4;
+
+                        // Orbit slightly
+                        p.vx += forceDirectionY * force * 1.5;
+                        p.vy -= forceDirectionX * force * 1.5;
+                    }
                 }
 
                 // Spring back only if displaced or moving
@@ -691,19 +702,65 @@ document.addEventListener('DOMContentLoaded', () => {
             mouse.y = -1000;
         });
 
+        // Touch interactions for mobile pixel effect
+        let touchTimeout;
+        taglineSection.addEventListener('touchstart', (e) => {
+            if (!isInitialized || !isTouchDevice) return;
+            clearTimeout(touchTimeout);
+            
+            canvas.style.opacity = '1';
+            taglineText.style.opacity = '0';
+            
+            cancelAnimationFrame(animationFrameId);
+            animate();
+            
+            const rect = canvas.getBoundingClientRect();
+            mouse.x = (e.touches[0].clientX - rect.left) * dpr;
+            mouse.y = (e.touches[0].clientY - rect.top) * dpr;
+        }, { passive: true });
+
+        taglineSection.addEventListener('touchmove', (e) => {
+            if (!isInitialized || !isTouchDevice) return;
+            const rect = canvas.getBoundingClientRect();
+            mouse.x = (e.touches[0].clientX - rect.left) * dpr;
+            mouse.y = (e.touches[0].clientY - rect.top) * dpr;
+        }, { passive: true });
+
+        taglineSection.addEventListener('touchend', () => {
+            if (!isInitialized || !isTouchDevice) return;
+            mouse.x = -1000;
+            mouse.y = -1000;
+            
+            touchTimeout = setTimeout(() => {
+                canvas.style.opacity = '0';
+                taglineText.style.opacity = '1';
+                setTimeout(() => {
+                    cancelAnimationFrame(animationFrameId);
+                }, 400); // Wait for fade out before stopping loop
+            }, 600);
+        });
+
         const taglineObserver = new IntersectionObserver((entries) => {
             if (entries[0].isIntersecting) {
+                isOffscreen = false;
                 // Ensure fonts are loaded before initializing particles
-                if (document.fonts) {
-                    document.fonts.ready.then(() => {
-                        if (!isInitialized) initParticles();
-                    });
-                } else {
-                    if (!isInitialized) setTimeout(initParticles, 500);
+                if (!isInitialized) {
+                    if (document.fonts) {
+                        document.fonts.ready.then(() => {
+                            if (!isInitialized) initParticles();
+                        });
+                    } else {
+                        setTimeout(initParticles, 500);
+                    }
+                } else if (!isTouchDevice) {
+                    cancelAnimationFrame(animationFrameId);
+                    animate();
                 }
-                taglineObserver.disconnect();
+            } else {
+                isOffscreen = true;
+                cancelAnimationFrame(animationFrameId);
             }
-        }, { threshold: 0.2 });
+        }, { threshold: 0.05 });
         taglineObserver.observe(taglineSection);
     }
 
@@ -1152,7 +1209,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Close mobile menu if open
                 if (mobileMenu && mobileMenu.classList.contains('open')) {
-                    mobileMenu.classList.remove('open');
+                    toggleMobileMenu();
                     document.body.classList.remove('no-scroll');
                 }
             }
@@ -1160,9 +1217,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // 10. Mobile Menu Toggle
-    const navToggle = document.getElementById('nav-mtoggle');
-    const mobileMenu = document.getElementById('mobile-menu');
+    const mobileMenuToggles = document.querySelectorAll('.nav-burger');
     const mmClose = document.getElementById('mm-close');
+    const mobileMenu = document.getElementById('mobile-menu');
     const mmLinks = document.querySelectorAll('.mm-link');
 
     const toggleMobileMenu = () => {
@@ -1172,8 +1229,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    if (navToggle) navToggle.addEventListener('click', toggleMobileMenu);
-    // Also handle any other burger buttons (e.g., in scrolled nav state)
     document.querySelectorAll('.nav-burger').forEach(btn => {
         btn.addEventListener('click', toggleMobileMenu);
     });
@@ -1197,9 +1252,10 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
 
             let isValid = true;
-            const nameInput = contactForm.querySelector('input[name="name"]');
-            const emailInput = contactForm.querySelector('input[name="email"]');
-            const messageInput = contactForm.querySelector('textarea[name="message"]');
+            const firstNameInput = document.getElementById('first_name');
+            const lastNameInput = document.getElementById('last_name');
+            const emailInput = document.getElementById('email');
+            const messageInput = document.getElementById('message');
 
             const setError = (input) => {
                 if (input) {
@@ -1209,14 +1265,15 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             const clearErrors = () => {
-                [nameInput, emailInput, messageInput].forEach(input => {
+                [firstNameInput, lastNameInput, emailInput, messageInput].forEach(input => {
                     if (input) input.classList.remove('error');
                 });
             };
 
             clearErrors();
 
-            if (!nameInput?.value.trim()) setError(nameInput);
+            if (!firstNameInput?.value.trim()) setError(firstNameInput);
+            if (!lastNameInput?.value.trim()) setError(lastNameInput);
 
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailInput?.value.trim() || !emailRegex.test(emailInput.value)) {
@@ -1226,17 +1283,30 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!messageInput?.value.trim()) setError(messageInput);
 
             if (isValid) {
-                const btn = contactForm.querySelector('.form-submit');
+                const btn = contactForm.querySelector('.cp-submit') || contactForm.querySelector('button[type="submit"]');
                 if (btn) {
-                    btn.classList.add('loading');
+                    const originalText = btn.textContent;
+                    btn.textContent = 'Sending...';
+                    btn.style.pointerEvents = 'none';
+                    btn.style.opacity = '0.7';
+
                     setTimeout(() => {
-                        btn.classList.remove('loading');
-                        btn.classList.add('success');
+                        btn.textContent = 'Sent!';
+                        btn.style.backgroundColor = '#4caf50';
+                        btn.style.color = '#fff';
+                        
                         setTimeout(() => {
-                            btn.classList.remove('success');
+                            alert("Thanks! Your message has been sent successfully.");
                             contactForm.reset();
                             clearErrors();
-                        }, 2500);
+                            
+                            // Restore button
+                            btn.textContent = originalText;
+                            btn.style.pointerEvents = 'auto';
+                            btn.style.opacity = '1';
+                            btn.style.backgroundColor = '';
+                            btn.style.color = '';
+                        }, 500);
                     }, 1200);
                 }
             }
@@ -1640,4 +1710,23 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     }
+
+    // 19. Make Placeholder Links Functional
+    const placeholderLinks = document.querySelectorAll('.pf-social-grid a[href="#"], .cp-socials a[href="#"], a.nav-item[href="#"]');
+    placeholderLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const platform = link.textContent.trim();
+            alert(`Opening Capture Culture's ${platform} profile...`);
+        });
+    });
+
+    // 20. Admin Buttons Placeholder
+    const adminButtons = document.querySelectorAll('.admin-btn');
+    adminButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            if(btn.type !== 'submit') e.preventDefault();
+            alert('Admin panel functionality coming soon!');
+        });
+    });
 });

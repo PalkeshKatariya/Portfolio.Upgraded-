@@ -63,9 +63,15 @@
 
     <!-- ═══════════════════════════════════ NAVIGATION ═══════════════════════════════════ -->
     <nav id="main-nav">
-        <!-- Top state (visible at top of page) -->
-        <div class="nav-state nav-state-top">
-            <div class="nav-left">
+        <!-- Unified Nav State -->
+        <div class="nav-state nav-unified">
+            <div class="nav-logo-group">
+                <a href="index.html" class="nav-logo" aria-label="Capture Culture — Home">Capture Culture</a>
+            </div>
+            
+            <div class="nav-spacer spacer-left"></div>
+            
+            <div class="nav-links-group">
                 <a href="#services" class="nav-pill magnetic">Services
                     <svg viewBox="0 0 10 10">
                         <path d="M2 8L8 2M8 2H3M8 2V7" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -82,40 +88,10 @@
                     </svg>
                 </a>
             </div>
-
-            <div class="nav-right">
-                <a href="contact.html" class="nav-pill magnetic">Contact
-                    <svg viewBox="0 0 10 10">
-                        <path d="M2 8L8 2M8 2H3M8 2V7" stroke-linecap="round" stroke-linejoin="round"></path>
-                    </svg>
-                </a>
-                <button class="nav-burger" id="nav-mtoggle" aria-label="Open menu" aria-expanded="false">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-            </div>
-        </div>
-
-        <!-- Scrolled state (visible after scrolling) -->
-        <div class="nav-state nav-state-scrolled">
-            <a href="#hero" class="nav-logo" aria-label="Capture Culture — Home">Capture Culture</a>
-            <div class="ns-right">
-                <a href="#services" class="nav-pill magnetic">Services
-                    <svg viewBox="0 0 10 10">
-                        <path d="M2 8L8 2M8 2H3M8 2V7" stroke-linecap="round" stroke-linejoin="round"></path>
-                    </svg>
-                </a>
-                <a href="#projects" class="nav-pill magnetic">Portfolio
-                    <svg viewBox="0 0 10 10">
-                        <path d="M2 8L8 2M8 2H3M8 2V7" stroke-linecap="round" stroke-linejoin="round"></path>
-                    </svg>
-                </a>
-                <a href="#tagline" class="nav-pill magnetic">About
-                    <svg viewBox="0 0 10 10">
-                        <path d="M2 8L8 2M8 2H3M8 2V7" stroke-linecap="round" stroke-linejoin="round"></path>
-                    </svg>
-                </a>
+            
+            <div class="nav-spacer spacer-right"></div>
+            
+            <div class="nav-actions-group">
                 <a href="contact.html" class="nav-pill magnetic">Contact
                     <svg viewBox="0 0 10 10">
                         <path d="M2 8L8 2M8 2H3M8 2V7" stroke-linecap="round" stroke-linejoin="round"></path>
