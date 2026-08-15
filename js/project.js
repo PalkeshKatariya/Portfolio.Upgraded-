@@ -57,8 +57,52 @@ document.addEventListener('DOMContentLoaded', () => {
         // Set Media
         const ytId = extractYouTubeId(project.youtube_url || project.youtubeUrl);
         if (ytId) {
-            // Embed YouTube video
-            mediaContainer.innerHTML = `<iframe src="https://www.youtube.com/embed/${ytId}?autoplay=0&rel=0&showinfo=0" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
+            // Embed YouTube video with overlay to allow custom cursor on top
+            mediaContainer.innerHTML = `
+                <div id="yt-player" style="width:100%; height:100%;"></div>
+                <div id="yt-overlay" style="position: absolute; top: 0; left: 0; right: 0; bottom: 60px; z-index: 10; cursor: none;"></div>
+            `;
+            
+            const initYTPlayer = () => {
+                let isPlaying = false;
+                const player = new YT.Player('yt-player', {
+                    videoId: ytId,
+                    playerVars: { 'autoplay': 0, 'rel': 0, 'showinfo': 0, 'controls': 1 },
+                    events: {
+                        'onReady': () => {
+                            const overlay = document.getElementById('yt-overlay');
+                            if (overlay) {
+                                overlay.addEventListener('click', () => {
+                                    if (isPlaying) {
+                                        player.pauseVideo();
+                                    } else {
+                                        player.playVideo();
+                                    }
+                                });
+                            }
+                        },
+                        'onStateChange': (event) => {
+                            isPlaying = event.data === YT.PlayerState.PLAYING;
+                        }
+                    }
+                });
+            };
+
+            if (window.YT && window.YT.Player) {
+                initYTPlayer();
+            } else {
+                if (!document.querySelector('script[src="https://www.youtube.com/iframe_api"]')) {
+                    const tag = document.createElement('script');
+                    tag.src = "https://www.youtube.com/iframe_api";
+                    const firstScriptTag = document.getElementsByTagName('script')[0];
+                    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+                }
+                const existingCallback = window.onYouTubeIframeAPIReady;
+                window.onYouTubeIframeAPIReady = () => {
+                    if (existingCallback) existingCallback();
+                    initYTPlayer();
+                };
+            }
         } else if (project.thumbnail) {
             // Fallback to image if no video
             mediaContainer.innerHTML = `<img src="${project.thumbnail}" alt="${project.title}" style="width: 100%; height: 100%; object-fit: cover;">`;
