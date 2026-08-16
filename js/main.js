@@ -267,6 +267,12 @@ document.addEventListener('DOMContentLoaded', () => {
         let ticking = false;
 
         const updateReelScale = () => {
+            if (window.innerWidth <= 768) {
+                reelWrap.style.transform = 'scale(1)';
+                ticking = false;
+                return;
+            }
+
             const rect = reelWrap.getBoundingClientRect();
             const windowHeight = window.innerHeight;
 
@@ -517,6 +523,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const initParticles = () => {
             isTouchDevice = window.matchMedia("(pointer: coarse)").matches || window.innerWidth <= 1024;
 
+            // Disable pixel animation completely on mobile devices to prevent touch glitches
+            if (window.innerWidth <= 768) {
+                isInitialized = false;
+                canvas.style.display = 'none';
+                taglineText.style.opacity = '1';
+                return;
+            }
+
+            canvas.style.display = 'block';
+            taglineText.style.opacity = '';
+
             particles = [];
             resizeCanvas();
             const rect = taglineSection.getBoundingClientRect();
@@ -617,7 +634,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 canvas.style.opacity = '0';
                 canvas.style.transition = 'opacity 0.4s ease';
                 taglineText.style.transition = 'opacity 0.4s ease';
-                
+
                 particles.forEach(p => {
                     ctx.fillStyle = p.color;
                     ctx.fillRect(p.x, p.y, p.size, p.size);
@@ -707,13 +724,13 @@ document.addEventListener('DOMContentLoaded', () => {
         taglineSection.addEventListener('touchstart', (e) => {
             if (!isInitialized || !isTouchDevice) return;
             clearTimeout(touchTimeout);
-            
+
             canvas.style.opacity = '1';
             taglineText.style.opacity = '0';
-            
+
             cancelAnimationFrame(animationFrameId);
             animate();
-            
+
             const rect = canvas.getBoundingClientRect();
             mouse.x = (e.touches[0].clientX - rect.left) * dpr;
             mouse.y = (e.touches[0].clientY - rect.top) * dpr;
@@ -730,7 +747,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!isInitialized || !isTouchDevice) return;
             mouse.x = -1000;
             mouse.y = -1000;
-            
+
             touchTimeout = setTimeout(() => {
                 canvas.style.opacity = '0';
                 taglineText.style.opacity = '1';
@@ -1100,7 +1117,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Carousel Buttons Logic
             const btnLeft = document.querySelector('.cb-left');
             const btnRight = document.querySelector('.cb-right');
-            
+
             if (btnLeft) {
                 btnLeft.addEventListener('pointerdown', (e) => e.stopPropagation());
                 btnLeft.addEventListener('click', (e) => {
@@ -1294,12 +1311,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         btn.textContent = 'Sent!';
                         btn.style.backgroundColor = '#4caf50';
                         btn.style.color = '#fff';
-                        
+
                         setTimeout(() => {
                             alert("Thanks! Your message has been sent successfully.");
                             contactForm.reset();
                             clearErrors();
-                            
+
                             // Restore button
                             btn.textContent = originalText;
                             btn.style.pointerEvents = 'auto';
@@ -1725,7 +1742,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const adminButtons = document.querySelectorAll('.admin-btn');
     adminButtons.forEach(btn => {
         btn.addEventListener('click', (e) => {
-            if(btn.type !== 'submit') e.preventDefault();
+            if (btn.type !== 'submit') e.preventDefault();
             alert('Admin panel functionality coming soon!');
         });
     });

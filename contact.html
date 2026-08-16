@@ -265,8 +265,15 @@
         /* RESPONSIVE */
         @media (max-width: 900px) {
             .cp-grid {
-                grid-template-columns: 1fr;
+                display: flex;
+                flex-direction: column-reverse;
                 gap: 60px;
+            }
+
+            .cp-info {
+                display: flex;
+                justify-content: space-between;
+                gap: 20px;
             }
 
             .form-row {
@@ -279,7 +286,9 @@
                 align-items: flex-start;
             }
 
-            .cp-input, .cp-textarea, .cp-submit {
+            .cp-input,
+            .cp-textarea,
+            .cp-submit {
                 min-height: 48px;
             }
 
@@ -323,9 +332,9 @@
             <div class="nav-logo-group">
                 <a href="index.html" class="nav-logo" aria-label="Capture Culture — Home">Capture Culture</a>
             </div>
-            
+
             <div class="nav-spacer spacer-left"></div>
-            
+
             <div class="nav-links-group">
                 <a href="index.html#services" class="nav-pill magnetic">Services
                     <svg viewBox="0 0 10 10">
@@ -343,9 +352,9 @@
                     </svg>
                 </a>
             </div>
-            
+
             <div class="nav-spacer spacer-right"></div>
-            
+
             <div class="nav-actions-group">
                 <a href="index.html" class="nav-pill magnetic">Home
                     <svg viewBox="0 0 10 10">
@@ -467,7 +476,7 @@
                     <a href="#" class="magnetic">LinkedIn</a>
                     <a href="#" class="magnetic">Privacy Policy</a>
                 </div>
-            </div> --> -->
+            </div> -->
         </section>
     </main>
 
@@ -518,6 +527,11 @@
                         <a href="#" class="magnetic">Behance</a>
                         <a href="#" class="magnetic">GitHub</a>
                     </div>
+                </div>
+
+                <!-- Bottom / Reach Us -->
+                <div class="pf-col pf-reach">
+                    <h4 class="pf-col-title">Reach Us Out</h4>
                     <div class="pf-contact-info">
                         <a href="mailto:hello@captureculture.com" class="magnetic">hello@captureculture.com</a><br>
                         <a href="tel:+919876543210" class="magnetic">+91 98765 43210</a><br>
