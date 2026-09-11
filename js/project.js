@@ -55,7 +55,29 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Set Media
-        const ytId = extractYouTubeId(project.youtube_url || project.youtubeUrl);
+        const ytUrl = project.youtube_url || project.youtubeUrl || '';
+        const isShorts = ytUrl.toLowerCase().includes('shorts');
+
+        let thumbSrc = (project.thumbnail && project.thumbnail.trim() !== '') ? project.thumbnail.trim().replace(/\\/g, '/') : null;
+        if (!thumbSrc) {
+            const ytId = extractYouTubeId(ytUrl);
+            if (ytId) {
+                thumbSrc = `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`;
+            } else {
+                thumbSrc = 'assets/images/placeholder.jpg';
+            }
+        }
+
+        const isVertical = isShorts ||
+            (thumbSrc && (thumbSrc.includes('runner') || thumbSrc.includes('converse') || thumbSrc.includes('Protein') || thumbSrc.includes('vertical')));
+
+        if (isVertical) {
+            mediaContainer.classList.add('is-vertical');
+        } else {
+            mediaContainer.classList.remove('is-vertical');
+        }
+
+        const ytId = extractYouTubeId(ytUrl);
         if (ytId) {
             // Embed YouTube video with overlay to allow custom cursor on top
             mediaContainer.innerHTML = `
@@ -103,9 +125,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     initYTPlayer();
                 };
             }
-        } else if (project.thumbnail) {
+        } else if (thumbSrc) {
             // Fallback to image if no video
-            mediaContainer.innerHTML = `<img src="${project.thumbnail}" alt="${project.title}" style="width: 100%; height: 100%; object-fit: cover;">`;
+            mediaContainer.innerHTML = `<img src="${thumbSrc}" alt="${project.title}" style="width: 100%; height: 100%; object-fit: cover;">`;
         } else {
             mediaContainer.innerHTML = `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #eee; color: #999;">No Media Available</div>`;
         }

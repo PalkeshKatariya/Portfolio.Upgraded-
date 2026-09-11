@@ -25,22 +25,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
         filteredProjects.forEach((p, index) => {
             const a = document.createElement('a');
-            // We use a query parameter to pass the project id to the detail page.
             a.href = `project.html?id=${p.id}`;
-            a.className = 'work-card reveal';
-
-            // Stagger reveal animations slightly based on index
             a.style.animationDelay = `${index * 0.05}s`;
 
-            let thumbSrc = (p.thumbnail && p.thumbnail.trim() !== '') ? p.thumbnail.trim() : null;
+            const ytUrl = p.youtube_url || p.youtubeUrl || '';
+            const isShorts = ytUrl.toLowerCase().includes('shorts');
+
+            let thumbSrc = (p.thumbnail && p.thumbnail.trim() !== '') ? p.thumbnail.trim().replace(/\\/g, '/') : null;
             if (!thumbSrc) {
-                const ytId = extractYouTubeId(p.youtube_url || p.youtubeUrl);
+                const ytId = extractYouTubeId(ytUrl);
                 if (ytId) {
                     thumbSrc = `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`;
                 } else {
                     thumbSrc = 'assets/images/placeholder.jpg';
                 }
             }
+
+            const isVertical = isShorts ||
+                (thumbSrc && (thumbSrc.includes('runner') || thumbSrc.includes('converse') || thumbSrc.includes('Protein') || thumbSrc.includes('vertical')));
+
+            a.className = `work-card reveal${isVertical ? ' is-vertical' : ''}`;
 
             a.innerHTML = `
                 <div class="work-card-media">
@@ -57,6 +61,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
             `;
+
+            const img = a.querySelector('.work-card-img');
+            if (img) {
+                img.addEventListener('load', () => {
+                    if (img.naturalHeight > img.naturalWidth * 1.1) {
+                        a.classList.add('is-vertical');
+                    }
+                });
+            }
 
             workGrid.appendChild(a);
         });

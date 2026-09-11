@@ -1412,18 +1412,26 @@ document.addEventListener('DOMContentLoaded', () => {
             filteredProjects.forEach(p => {
                 const a = document.createElement('a');
                 a.href = '#';
-                a.className = 'project-card';
-                a.setAttribute('data-youtube-id', p.youtube_url || p.youtubeUrl);
 
-                let thumbSrc = (p.thumbnail && p.thumbnail.trim() !== '') ? p.thumbnail.trim() : null;
+                const ytUrl = p.youtube_url || p.youtubeUrl || '';
+                const isShorts = ytUrl.toLowerCase().includes('shorts');
+
+                let thumbSrc = (p.thumbnail && p.thumbnail.trim() !== '') ? p.thumbnail.trim().replace(/\\/g, '/') : null;
                 if (!thumbSrc) {
-                    const ytId = extractYouTubeId(p.youtube_url || p.youtubeUrl);
+                    const ytId = extractYouTubeId(ytUrl);
                     if (ytId) {
                         thumbSrc = `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`;
                     } else {
                         thumbSrc = 'assets/images/placeholder.jpg';
                     }
                 }
+
+                const isVertical = isShorts ||
+                    (thumbSrc && (thumbSrc.includes('runner') || thumbSrc.includes('converse') || thumbSrc.includes('Protein') || thumbSrc.includes('vertical')));
+
+                a.className = `project-card${isVertical ? ' is-vertical' : ''}`;
+                a.setAttribute('data-youtube-id', ytUrl);
+                if (isVertical) a.setAttribute('data-is-vertical', 'true');
 
                 a.innerHTML = `
                     <div class="project-media">
@@ -1440,6 +1448,17 @@ document.addEventListener('DOMContentLoaded', () => {
                         <span class="project-year">${p.year || ''}</span>
                     </div>
                 `;
+
+                const img = a.querySelector('.project-img');
+                if (img) {
+                    img.addEventListener('load', () => {
+                        if (img.naturalHeight > img.naturalWidth * 1.1) {
+                            a.classList.add('is-vertical');
+                            a.setAttribute('data-is-vertical', 'true');
+                        }
+                    });
+                }
+
                 dynamicProjectsTrack.appendChild(a);
             });
 
@@ -1481,8 +1500,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const modalContainer = videoModal.querySelector('.video-modal-container');
         const modalCloseBtn = videoModal.querySelector('.video-modal-close');
 
-        const openModal = (youtubeId, localVideoSrc) => {
+        const openModal = (youtubeId, localVideoSrc, isVertical = false) => {
             videoModal.classList.add('active');
+
+            if (isVertical) {
+                modalContainer.classList.add('is-vertical');
+            } else {
+                modalContainer.classList.remove('is-vertical');
+            }
 
             if (localVideoSrc) {
                 modalContainer.innerHTML = `<video src="${localVideoSrc}" autoplay controls playsinline style="width: 100%; height: 100%; border-radius: 8px; background-color: #000; object-fit: cover;"></video>`;
@@ -1502,6 +1527,7 @@ document.addEventListener('DOMContentLoaded', () => {
             gsap.to(modalBackdrop, {
                 opacity: 0, duration: 0.4, ease: "power2.in", onComplete: () => {
                     videoModal.classList.remove('active');
+                    modalContainer.classList.remove('is-vertical');
                     gsap.set(videoModal, { pointerEvents: 'none' });
                     modalContainer.innerHTML = '';
                 }
@@ -1515,10 +1541,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.preventDefault();
                 const localVideoSrc = btn.getAttribute('data-local-video');
                 const rawId = btn.getAttribute('data-youtube-id');
+                const isVertical = btn.getAttribute('data-is-vertical') === 'true' || btn.classList.contains('is-vertical');
                 const youtubeId = extractYouTubeId(rawId);
 
                 if (localVideoSrc || youtubeId) {
-                    openModal(youtubeId, localVideoSrc);
+                    openModal(youtubeId, localVideoSrc, isVertical);
                 }
             }
         });

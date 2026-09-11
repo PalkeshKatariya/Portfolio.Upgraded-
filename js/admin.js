@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     const getThumbnail = (p) => {
-        if (p.thumbnail && p.thumbnail.trim() !== '') return p.thumbnail;
+        if (p.thumbnail && p.thumbnail.trim() !== '') return p.thumbnail.trim().replace(/\\/g, '/');
         const ytId = extractYouTubeId(p.youtube_url);
         return ytId ? `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg` : 'assets/images/placeholder.jpg';
     };
