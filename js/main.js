@@ -1761,7 +1761,7 @@ document.addEventListener('DOMContentLoaded', () => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const platform = link.textContent.trim();
-            alert(`Opening Capture Culture's ${platform} profile...`);
+            alert(`Opening HeyDev's ${platform} profile...`);
         });
     });
 
