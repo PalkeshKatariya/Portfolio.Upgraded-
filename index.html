@@ -223,113 +223,90 @@
         </section>
         <!-- ═══════════════════════════════════ SERVICES ═══════════════════════════════════ -->
         <section id="services">
-            <p class="section-label reveal">What We Do</p>
+            <div class="services-container reveal">
+                <!-- Left: Section Title & Static Image Preview Frame -->
+                <div class="services-col-left">
+                    <span class="services-label">SERVICES</span>
+                    <div class="services-media-frame" id="services-media-frame"></div>
+                </div>
 
-            <!-- Floating cursor image preview (follows mouse) -->
-            <div class="services-image" id="services-image" aria-hidden="true">
-                <img src="" alt="" id="services-preview-img">
-            </div>
-
-            <div class="services-layout">
-                <!-- Left: Service headings list -->
-
-                <div class="services-list-wrap">
-                    <div class="services-list">
+                <!-- Center: Vertical Stack of Service Headings (highlights on hover) -->
+                <div class="services-col-center">
+                    <div class="services-list" role="tablist" aria-label="Services List">
 
                         <div class="service-item" data-service="weddings"
                             data-image="assets/images/portfolio-wedding.jpg" data-heading="Weddings &amp; Events"
                             data-subtitle="Capturing your most precious moments."
-                            data-desc="We believe every love story is unique. Our cinematic approach to wedding and event videography focuses on authentic emotions, stunning visuals, and storytelling that you'll relive for generations. From intimate ceremonies to grand celebrations."
-                            data-tags="Cinematic Highlights,Full Day Coverage,Drone Aerials,Same-Day Edits"
+                            data-desc="We believe every love story is unique. Our cinematic approach to wedding and event videography focuses on authentic emotions, timeless visuals, and storytelling you'll relive for generations. From intimate ceremonies to grand celebrations."
+                            data-tags="Cinematic Highlights, Full Day Coverage, Drone Aerials, Same-Day Edits"
                             role="button" tabindex="0" aria-expanded="false">
-                            <div class="service-item-header">
-                                <span class="num">01</span>
-                                <h3>Weddings &amp; Events</h3>
-                                <svg class="arr" viewBox="0 0 24 24">
-                                    <path d="M6 18L18 6M18 6H8M18 6V16" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="1.5"></path>
-                                </svg>
-                                <div class="service-progress"></div>
-                            </div>
+                            <h3 class="service-title">Weddings &amp; Events</h3>
                         </div>
 
                         <div class="service-item" data-service="commercial"
                             data-image="assets/images/portfolio-commercial.jpg" data-heading="Commercial Films"
                             data-subtitle="Elevating your brand through visual storytelling."
-                            data-desc="From product launches to brand anthems, we craft commercial content that doesn't just look beautiful — it converts. We work closely with brands to understand their vision and translate it into compelling video that resonates with their audience."
-                            data-tags="Brand Films,Product Videos,Social Content,Corporate Films" role="button"
+                            data-desc="From product launches to brand anthems, we craft commercial content that doesn't just look beautiful — it converts. High-impact films tailored to resonate with modern audiences and communicate brand vision."
+                            data-tags="Brand Films, Product Videos, Social Content, Corporate Films" role="button"
                             tabindex="0" aria-expanded="false">
-                            <div class="service-item-header">
-                                <span class="num">02</span>
-                                <h3>Commercial Films</h3>
-                                <svg class="arr" viewBox="0 0 24 24">
-                                    <path d="M6 18L18 6M18 6H8M18 6V16" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="1.5"></path>
-                                </svg>
-                                <div class="service-progress"></div>
-                            </div>
+                            <h3 class="service-title">Commercial Films</h3>
                         </div>
 
                         <div class="service-item" data-service="music"
                             data-image="assets/images/portfolio-musicvideo.jpg" data-heading="Music Videos"
                             data-subtitle="Bringing sound to life through visuals."
-                            data-desc="Music videos are where we push creative boundaries the furthest. We collaborate with artists to develop bold visual concepts, striking color palettes, and dynamic cinematography that amplifies the music's emotional impact."
-                            data-tags="Concept Development,Performance Videos,Lyric Videos,Live Sessions" role="button"
-                            tabindex="0" aria-expanded="false">
-                            <div class="service-item-header">
-                                <span class="num">03</span>
-                                <h3>Music Videos</h3>
-                                <svg class="arr" viewBox="0 0 24 24">
-                                    <path d="M6 18L18 6M18 6H8M18 6V16" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="1.5"></path>
-                                </svg>
-                                <div class="service-progress"></div>
-                            </div>
+                            data-desc="Music videos are where we push creative boundaries the furthest. We collaborate with artists to develop bold visual concepts, striking palettes, and dynamic cinematography that amplifies the music's emotional impact."
+                            data-tags="Concept Development, Performance Videos, Lyric Videos, Live Sessions"
+                            role="button" tabindex="0" aria-expanded="false">
+                            <h3 class="service-title">Music Videos</h3>
                         </div>
 
                         <div class="service-item" data-service="realestate"
                             data-image="assets/images/portfolio-realestate.jpg" data-heading="Real Estate &amp; Drone"
-                            data-subtitle="Showcasing properties from every angle."
+                            data-subtitle="Showcasing spaces from every angle."
                             data-desc="Our aerial and ground-level cinematography transforms property listings into cinematic experiences. Using professional drones and stabilized cameras, we capture the full scale, beauty, and lifestyle potential of any space."
-                            data-tags="Aerial Drone Shots,Virtual Tours,Twilight Shoots,Agent Profiles" role="button"
+                            data-tags="Aerial Drone Shots, Virtual Tours, Twilight Shoots, Agent Profiles" role="button"
                             tabindex="0" aria-expanded="false">
-                            <div class="service-item-header">
-                                <span class="num">04</span>
-                                <h3>Real Estate &amp; Drone</h3>
-                                <svg class="arr" viewBox="0 0 24 24">
-                                    <path d="M6 18L18 6M18 6H8M18 6V16" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="1.5"></path>
-                                </svg>
-                                <div class="service-progress"></div>
-                            </div>
+                            <h3 class="service-title">Real Estate &amp; Drone</h3>
                         </div>
 
                         <div class="service-item" data-service="documentary"
                             data-image="assets/images/portfolio-documentary.jpg" data-heading="Documentary"
-                            data-subtitle="Real stories, real impact."
+                            data-subtitle="Real stories, real human impact."
                             data-desc="We are passionate about documentaries that shine a light on important stories. Whether it's a personal journey, a social cause, or an organizational narrative, we bring empathy, patience, and artistic vision to every documentary project."
-                            data-tags="Short Documentaries,Interview Features,Event Docs,Mini-Series" role="button"
+                            data-tags="Short Documentaries, Interview Features, Event Docs, Mini-Series" role="button"
                             tabindex="0" aria-expanded="false">
-                            <div class="service-item-header">
-                                <span class="num">05</span>
-                                <h3>Documentary</h3>
-                                <svg class="arr" viewBox="0 0 24 24">
-                                    <path d="M6 18L18 6M18 6H8M18 6V16" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="1.5"></path>
-                                </svg>
-                                <div class="service-progress"></div>
-                            </div>
+                            <h3 class="service-title">Documentary</h3>
+                        </div>
+
+                        <div class="service-item" data-service="vfx" data-image="assets/images/runner.png"
+                            data-heading="Visual Effects" data-subtitle="Bending reality beautifully."
+                            data-desc="Seamless enhancements, impossible visuals, invisible craft. Color grading and high-end visual effects that elevate your production to cinema standards."
+                            data-tags="CGI &amp; Compositing, Color Grading, Invisible VFX, Motion Graphics"
+                            role="button" tabindex="0" aria-expanded="false">
+                            <h3 class="service-title">Visual Effects</h3>
+                        </div>
+
+                        <div class="service-item" data-service="direction" data-image="assets/images/grudge.png"
+                            data-heading="Creative Direction" data-subtitle="Artistic vision from concept to cut."
+                            data-desc="We shape unique cinematic identities for brands and creators, translating bold abstract ideas into clear, striking visual frameworks and flawless execution."
+                            data-tags="Art Direction, Moodboards, Storyboarding, Concept Development" role="button"
+                            tabindex="0" aria-expanded="false">
+                            <h3 class="service-title">Creative Direction</h3>
                         </div>
 
                     </div>
                 </div>
 
-                <!-- Right: Detail panel with word-rise animation -->
-                <div class="services-detail-panel" id="services-detail-panel" aria-live="polite">
+                <!-- Right: Detailed Text Panel with Word-Rise Animation -->
+                <div class="services-col-right" id="services-detail-panel" aria-live="polite">
                     <div class="sdp-inner">
-                        <div class="sdp-content">
-                            <h4 class="sdp-subtitle" id="sdp-subtitle"></h4>
-                            <p class="sdp-desc" id="sdp-desc"></p>
+                        <div class="sdp-content active">
+                            <h4 class="sdp-subtitle" id="sdp-subtitle">Capturing your most precious moments.</h4>
+                            <p class="sdp-desc" id="sdp-desc">We believe every love story is unique. Our cinematic
+                                approach to wedding and event videography focuses on authentic emotions, timeless
+                                visuals, and storytelling you'll relive for generations. From intimate ceremonies to
+                                grand celebrations.</p>
                             <div class="services-tags sdp-tags" id="sdp-tags"></div>
                         </div>
                     </div>

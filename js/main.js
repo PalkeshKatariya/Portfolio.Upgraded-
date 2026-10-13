@@ -781,176 +781,193 @@ document.addEventListener('DOMContentLoaded', () => {
         taglineObserver.observe(taglineSection);
     }
 
-    // 6. Services — Cursor Image Follow + Right Panel Word-Rise Animation
+    // 6. Services — Static Left Image Preview (Bottom-Left Wipe-Up Overlay) + Center Heading Highlight + Right Panel Word-Rise Animation
     const serviceItems = document.querySelectorAll('.service-item');
-    const servicesImageBox = document.getElementById('services-image');
-    const servicesPreviewImg = document.getElementById('services-preview-img');
+    const servicesMediaFrame = document.getElementById('services-media-frame');
     const sdpSubtitle = document.getElementById('sdp-subtitle');
     const sdpDesc = document.getElementById('sdp-desc');
     const sdpTags = document.getElementById('sdp-tags');
     const sdpContent = document.querySelector('.sdp-content');
 
-    if (serviceItems.length && servicesImageBox && sdpDesc) {
-
-        // ── Cursor-follow image logic ──
-        let mouseX = 0, mouseY = 0;
-        let imgX = 0, imgY = 0;
-        let imgAnimFrame = null;
-        const OFFSET_X = 32, OFFSET_Y = -80;
-
-        const animateImg = () => {
-            imgX += (mouseX - imgX) * 0.12;
-            imgY += (mouseY - imgY) * 0.12;
-            servicesImageBox.style.transform = `translate(${imgX + OFFSET_X}px, ${imgY + OFFSET_Y}px) scale(1) rotate(0deg)`;
-            imgAnimFrame = requestAnimationFrame(animateImg);
-        };
-
-        document.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-        }, { passive: true });
-
-        // ── Word-rise animation engine ──
-        // Splits text into word <span>s and staggers their rise-up transition
-        const riseWords = (containerEl, text, baseDelay = 0, wordDelay = 40) => {
-            containerEl.innerHTML = '';
-            const words = text.split(' ');
-            words.forEach((word, i) => {
-                const span = document.createElement('span');
-                span.className = 'sdp-word';
-                span.textContent = word;
-                span.style.transitionDelay = `${baseDelay + i * wordDelay}ms`;
-                // Add a regular space after each word (except last)
-                if (i < words.length - 1) {
-                    span.textContent = word + '\u00A0'; // non-breaking space keeps inline layout
-                }
-                containerEl.appendChild(span);
-            });
-            // Force reflow so initial state registers before we add .risen
-            containerEl.offsetHeight; // eslint-disable-line
-            containerEl.querySelectorAll('.sdp-word').forEach(w => w.classList.add('risen'));
-        };
+    if (serviceItems.length && servicesMediaFrame && sdpDesc) {
 
         let activeItem = null;
-        const servicesSection = document.getElementById('services');
-        const servicesListWrap = document.querySelector('.services-list-wrap');
+        let currentSwitchId = 0;
+        let deactivateTimer = null;
+
+        // Preload all service preview images for instantaneous wipe transitions
+        serviceItems.forEach(item => {
+            const src = item.dataset.image;
+            if (src) {
+                const img = new Image();
+                img.src = src;
+            }
+        });
+
+        // ── Wipe Up Image Overlay ──
+        const switchImage = (newSrc, altText, forceWipe = false) => {
+            if (!servicesMediaFrame) return;
+            const currentImgs = servicesMediaFrame.querySelectorAll('.services-preview-img');
+            const activeImg = currentImgs[currentImgs.length - 1];
+
+            // If not forcing a wipe and the image is already active, skip
+            if (!forceWipe && activeImg && activeImg.getAttribute('src') === newSrc) return;
+
+            const switchId = ++currentSwitchId;
+
+            const newImg = document.createElement('img');
+            newImg.src = newSrc;
+            newImg.alt = altText || 'Service preview';
+            newImg.className = 'services-preview-img incoming';
+            newImg.style.zIndex = (currentImgs.length + 2);
+
+            const triggerWipe = () => {
+                if (switchId !== currentSwitchId) return;
+                servicesMediaFrame.appendChild(newImg);
+                // Force layout reflow
+                void newImg.offsetHeight;
+
+                requestAnimationFrame(() => {
+                    if (switchId === currentSwitchId) {
+                        newImg.classList.add('wiping-in');
+                    }
+                });
+
+                setTimeout(() => {
+                    if (switchId === currentSwitchId) {
+                        const imgs = servicesMediaFrame.querySelectorAll('.services-preview-img');
+                        imgs.forEach(img => {
+                            if (img !== newImg) img.remove();
+                        });
+                        newImg.classList.remove('incoming', 'wiping-in');
+                        newImg.style.zIndex = '1';
+                    }
+                }, 560);
+            };
+
+            if (newImg.complete) {
+                triggerWipe();
+            } else {
+                newImg.onload = triggerWipe;
+                newImg.onerror = () => {
+                    if (activeImg) activeImg.src = newSrc;
+                };
+            }
+        };
 
         // ── Show service ──
-        const showService = (item, isInitialLoad = false) => {
-            if (item === activeItem) return;
+        const showService = (item, forceWipe = false) => {
+            if (item === activeItem && !forceWipe) return;
             activeItem = item;
 
             const imgSrc = item.dataset.image || '';
             const subtitle = item.dataset.subtitle || '';
             const desc = item.dataset.desc || '';
             const tagList = (item.dataset.tags || '').split(',').map(t => t.trim()).filter(Boolean);
+            const titleText = item.querySelector('.service-title')?.textContent || item.dataset.heading || '';
 
-            // Active state on left headings
+            // Update active state on headings
+            serviceItems.forEach(i => {
+                const isActive = (i === item);
+                i.classList.toggle('active', isActive);
+                i.setAttribute('aria-expanded', isActive ? 'true' : 'false');
+            });
+
+            // Update Left Preview Image with wipe-up overlay
+            if (imgSrc) {
+                switchImage(imgSrc, titleText + ' preview', forceWipe);
+            }
+
+            if (sdpContent) {
+                sdpContent.classList.add('active');
+            }
+
+            // Direct text update with no animation
+            if (sdpSubtitle) {
+                sdpSubtitle.textContent = subtitle;
+            }
+
+            if (sdpDesc) {
+                sdpDesc.textContent = desc;
+            }
+
+            if (sdpTags) {
+                sdpTags.innerHTML = '';
+                tagList.forEach(tag => {
+                    const tagEl = document.createElement('span');
+                    tagEl.className = 'services-tag';
+                    tagEl.textContent = tag;
+                    sdpTags.appendChild(tagEl);
+                });
+            }
+        };
+
+        const servicesContainer = document.querySelector('.services-container');
+        const servicesList = document.querySelector('.services-list');
+
+        const activateService = (item) => {
+            clearTimeout(deactivateTimer);
+            const wasInactive = !servicesContainer || !servicesContainer.classList.contains('is-hovering');
+
+            if (servicesContainer) {
+                servicesContainer.classList.add('is-hovering');
+            }
+
+            if (wasInactive && servicesMediaFrame) {
+                servicesMediaFrame.innerHTML = '';
+            }
+
+            showService(item, wasInactive);
+        };
+
+        const deactivateServices = () => {
+            if (servicesContainer) {
+                servicesContainer.classList.remove('is-hovering');
+            }
             serviceItems.forEach(i => {
                 i.classList.remove('active');
                 i.setAttribute('aria-expanded', 'false');
             });
-            item.classList.add('active');
-            item.setAttribute('aria-expanded', 'true');
+            activeItem = null;
 
-            // Show & follow cursor image (only on real hover, not initial load)
-            if (!isInitialLoad) {
-                if (imgSrc && servicesPreviewImg) {
-                    if (servicesPreviewImg.getAttribute('src') !== imgSrc) {
-                        servicesPreviewImg.src = imgSrc;
-                        servicesPreviewImg.alt = (item.querySelector('h3')?.textContent || '') + ' preview';
+            clearTimeout(deactivateTimer);
+            deactivateTimer = setTimeout(() => {
+                if (servicesContainer && !servicesContainer.classList.contains('is-hovering')) {
+                    if (servicesMediaFrame) {
+                        servicesMediaFrame.innerHTML = '';
                     }
                 }
-                servicesImageBox.classList.add('visible');
-                if (!imgAnimFrame) animateImg();
-            }
-
-            sdpContent.classList.add('active');
-
-            // ── Rise subtitle words (fast, short delay) ──
-            riseWords(sdpSubtitle, subtitle, 0, 35);
-
-            // ── Rise description words (after a tiny stagger head-start) ──
-            riseWords(sdpDesc, desc, 80, 22);
-
-            // ── Rise tags individually ──
-            sdpTags.innerHTML = '';
-            tagList.forEach((tag, i) => {
-                const wrapper = document.createElement('span');
-                wrapper.className = 'sdp-tag-item';
-                wrapper.style.transitionDelay = `${220 + i * 60}ms`;
-
-                const inner = document.createElement('span');
-                inner.className = 'services-tag';
-                inner.textContent = tag;
-                wrapper.appendChild(inner);
-                sdpTags.appendChild(wrapper);
-            });
-            // Force reflow then add risen
-            sdpTags.offsetHeight; // eslint-disable-line
-            sdpTags.querySelectorAll('.sdp-tag-item').forEach(t => t.classList.add('risen'));
+            }, 320);
         };
 
-        // ── Hide cursor image only (when leaving heading list) ──
-        const hideImage = () => {
-            servicesImageBox.classList.remove('visible');
-            cancelAnimationFrame(imgAnimFrame);
-            imgAnimFrame = null;
-        };
-
-        // ── Full reset (when leaving the whole section) ──
-        const resetToFirst = () => {
-            hideImage();
-            if (serviceItems[0]) {
-                showService(serviceItems[0], true);
-            }
-        };
-
-        // Desktop hover
+        // Desktop hover & keyboard focus
         serviceItems.forEach(item => {
-            item.addEventListener('mouseenter', () => showService(item));
-            item.addEventListener('focus', () => showService(item));
-        });
-
-        // Cursor image hides the moment mouse leaves the heading list column
-        if (servicesListWrap) {
-            servicesListWrap.addEventListener('mouseleave', hideImage);
-        }
-
-        // Full text reset when mouse leaves the whole section
-        if (servicesSection) {
-            servicesSection.addEventListener('mouseleave', resetToFirst);
-        }
-
-        // Initialize the first item on load
-        if (serviceItems.length > 0) {
-            resetToFirst();
-        }
-
-        // Keyboard blur
-        serviceItems.forEach(item => {
-            item.addEventListener('blur', (e) => {
-                if (!e.relatedTarget || !e.relatedTarget.closest('#services')) {
-                    hideAll();
-                }
-            });
-        });
-
-        // Mobile tap toggle
-        serviceItems.forEach(item => {
+            item.addEventListener('mouseenter', () => activateService(item));
+            item.addEventListener('focus', () => activateService(item));
             item.addEventListener('click', (e) => {
                 e.stopPropagation();
-                if (item.classList.contains('active')) {
-                    hideAll();
-                } else {
-                    showService(item);
-                }
+                activateService(item);
             });
         });
 
+        // Hide image and detailed text when mouse leaves the services headings
+        if (servicesList) {
+            servicesList.addEventListener('mouseleave', deactivateServices);
+        }
+
+        // Hide when keyboard focus leaves the services list
+        if (servicesContainer) {
+            servicesContainer.addEventListener('focusout', (e) => {
+                if (!e.relatedTarget || !e.relatedTarget.closest('.services-list')) {
+                    deactivateServices();
+                }
+            });
+        }
+
+        // Hide when clicking outside the services list (for touch / mobile)
         document.addEventListener('click', (e) => {
-            if (!e.target.closest('.service-item')) {
-                hideAll();
+            if (!e.target.closest('.services-list')) {
+                deactivateServices();
             }
         });
     }
