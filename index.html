@@ -319,38 +319,23 @@
         <!-- ═══════════════════════════════════ PORTFOLIO / PROJECTS ═══════════════════════════════════ -->
         <section id="projects">
             <div class="projects-head">
-                <p class="section-label reveal">Featured Work</p>
+                <div class="projects-head-left reveal">
+                    <span class="projects-label">FEATURED WORK</span>
+                    <h2 class="projects-headline">Selected Projects</h2>
+                </div>
                 <div class="project-filters reveal" id="project-filters">
-                    <a href="work.html" class="filter-btn active magnetic" style="text-decoration: none;">Show More
-                        Work</a>
-                </div>
-            </div>
-            <div class="projects-pin-wrap">
-
-                <div id="drag-cursor" aria-hidden="true">
-
-                    <div class="cursor-pill">
-                        <span class="arr">&lt;</span> DRAG <span class="arr">&gt;</span>
-                    </div>
-                </div>
-                <div class="projects-track" id="dynamic-projects-track">
-                    <!-- Projects will be injected here dynamically via main.js -->
+                    <a href="work.html" class="projects-cta-btn magnetic" style="text-decoration: none;">
+                        <span>All Projects</span>
+                        <svg viewBox="0 0 10 10" width="10" height="10">
+                            <path d="M2 8L8 2M8 2H3M8 2V7" stroke="currentColor" stroke-width="1.5"
+                                stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                    </a>
                 </div>
             </div>
 
-            <div class="carousel-nav">
-                <button class="carousel-btn cb-left" aria-label="Scroll Left">
-                    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="15 18 9 12 15 6"></polyline>
-                    </svg>
-                </button>
-                <button class="carousel-btn cb-right" aria-label="Scroll Right">
-                    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="9 18 15 12 9 6"></polyline>
-                    </svg>
-                </button>
+            <div class="projects-grid" id="dynamic-projects-track">
+                <!-- Projects will be injected here dynamically via main.js -->
             </div>
         </section>
 

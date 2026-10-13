@@ -509,6 +509,11 @@ document.addEventListener('DOMContentLoaded', () => {
         let isTouchDevice = false;
         let isOffscreen = false;
 
+        let currentTaglineParticleColor = null;
+        window.__updateTaglineParticleColor = (color) => {
+            currentTaglineParticleColor = color;
+        };
+
         const pad = 150; // Extra space for particles to fly without getting clipped
         const resizeCanvas = () => {
             const rect = taglineSection.getBoundingClientRect();
@@ -610,6 +615,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         const g = data[index + 1];
                         const b = data[index + 2];
 
+                        const isRed = r > 180 && g < 100;
                         particles.push({
                             x: x,
                             y: y,
@@ -617,6 +623,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             originY: y,
                             vx: 0,
                             vy: 0,
+                            isRed: isRed,
                             color: `rgb(${r},${g},${b})`,
                             size: step,
                             ease: 0.05 + Math.random() * 0.08
@@ -636,7 +643,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 taglineText.style.transition = 'opacity 0.4s ease';
 
                 particles.forEach(p => {
-                    ctx.fillStyle = p.color;
+                    ctx.fillStyle = p.isRed ? p.color : (currentTaglineParticleColor || p.color);
                     ctx.fillRect(p.x, p.y, p.size, p.size);
                 });
             }
@@ -691,7 +698,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
 
-                ctx.fillStyle = p.color;
+                ctx.fillStyle = p.isRed ? p.color : (currentTaglineParticleColor || p.color);
                 ctx.fillRect(p.x, p.y, p.size, p.size);
             }
             animationFrameId = requestAnimationFrame(animate);
@@ -780,6 +787,102 @@ document.addEventListener('DOMContentLoaded', () => {
         }, { threshold: 0.05 });
         taglineObserver.observe(taglineSection);
     }
+
+    // 5b. Scroll-Driven Background Color Transition (About -> Services)
+    const initScrollBackgroundTransition = () => {
+        const taglineSection = document.getElementById('tagline');
+        const servicesSection = document.getElementById('services');
+        const taglineText = document.getElementById('tagline-text');
+        const testimonialsSection = document.getElementById('testimonials');
+        const mainNav = document.getElementById('main-nav');
+
+        if (!taglineSection || !servicesSection) return;
+
+        let isTicking = false;
+
+        const updateScrollColor = () => {
+            const vh = window.innerHeight || 800;
+            const servicesRect = servicesSection.getBoundingClientRect();
+
+            // Transition window: starts when #services top approaches bottom of viewport (vh * 0.95),
+            // and completes smoothly as #services reaches vh * 0.22 (comfortably filling screen)
+            const startY = vh * 0.95;
+            const endY = vh * 0.22;
+
+            let rawProgress = (startY - servicesRect.top) / (startY - endY);
+            const progress = Math.max(0, Math.min(1, rawProgress));
+
+            // Smoothstep curve for seamless acceleration and deceleration
+            const smoothP = progress * progress * (3 - 2 * progress);
+
+            // Interpolate background color from #ffffff (255, 255, 255) to #0d0d0f (13, 13, 15)
+            const bgR = Math.round(255 + (13 - 255) * smoothP);
+            const bgG = Math.round(255 + (13 - 255) * smoothP);
+            const bgB = Math.round(255 + (15 - 255) * smoothP);
+            const bgRgb = `rgb(${bgR}, ${bgG}, ${bgB})`;
+
+            // Interpolate high-contrast text color from #1a1a2e (26, 26, 46) to #ffffff (255, 255, 255)
+            const textR = Math.round(26 + (255 - 26) * smoothP);
+            const textG = Math.round(26 + (255 - 26) * smoothP);
+            const textB = Math.round(46 + (255 - 46) * smoothP);
+            const textRgb = `rgb(${textR}, ${textG}, ${textB})`;
+
+            // Synchronize dynamic background on tagline, services, and document body
+            document.body.style.backgroundColor = bgRgb;
+            taglineSection.style.backgroundColor = bgRgb;
+            servicesSection.style.backgroundColor = bgRgb;
+
+            // Expose CSS variables for reactive components
+            document.documentElement.style.setProperty('--scroll-bg', bgRgb);
+            document.documentElement.style.setProperty('--services-text-color', textRgb);
+
+            // Adapt tagline text color
+            if (taglineText) {
+                taglineText.style.color = textRgb;
+            }
+
+            // Adapt tagline canvas particles
+            if (typeof window.__updateTaglineParticleColor === 'function') {
+                window.__updateTaglineParticleColor(textRgb);
+            }
+
+            // Sync mainNav dark mode state
+            if (mainNav) {
+                let isOverDark = smoothP > 0.45;
+                if (testimonialsSection) {
+                    const testRect = testimonialsSection.getBoundingClientRect();
+                    if (testRect.top <= 80) {
+                        isOverDark = false;
+                    }
+                }
+                const mainWrapperEl = document.querySelector('.main-wrapper');
+                if (mainWrapperEl) {
+                    const wrapRect = mainWrapperEl.getBoundingClientRect();
+                    if (wrapRect.bottom <= 80) {
+                        isOverDark = false;
+                    }
+                }
+                mainNav.classList.toggle('is-dark', isOverDark);
+            }
+
+            isTicking = false;
+        };
+
+        const onScroll = () => {
+            if (!isTicking) {
+                window.requestAnimationFrame(updateScrollColor);
+                isTicking = true;
+            }
+        };
+
+        window.addEventListener('scroll', onScroll, { passive: true });
+        window.addEventListener('resize', onScroll, { passive: true });
+
+        // Initial run
+        updateScrollColor();
+    };
+
+    initScrollBackgroundTransition();
 
     // 6. Services — Static Left Image Preview (Bottom-Left Wipe-Up Overlay) + Center Heading Highlight + Right Panel Word-Rise Animation
     const serviceItems = document.querySelectorAll('.service-item');
@@ -979,6 +1082,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let infiniteSliderRaf;
 
     window.initInfiniteSlider = () => {
+        return; // Carousel slider disabled in favor of Editorial Grid
+    };
+
+    const _unusedInitInfiniteSlider = () => {
         const projectsWrap = document.querySelector('.projects-pin-wrap');
         const track = document.getElementById('dynamic-projects-track');
         const dragCursor = document.getElementById('drag-cursor');
@@ -1417,43 +1524,149 @@ document.addEventListener('DOMContentLoaded', () => {
     if (dynamicProjectsTrack) {
         let allProjects = [];
 
+        // 12-Column Asymmetric Bento Pattern matching reference image:
+        // Row 1: Medium Rect (4) + Compact Square (3) + Large Wide Billboard (5) = 12 cols
+        // Row 2: Squarish (3) + Wide Cinematic (5) + Medium Rect (4) = 12 cols
+        // Row 3: Panoramic Wide (7) + Medium Rect (5) = 12 cols
+        // Row 4: Medium Rect (4) + Squarish (4) + Wide Rect (4) = 12 cols
+        const GRID_PATTERNS = [
+            { span: 'grid-span-4', ratio: 'ratio-rect' },
+            { span: 'grid-span-3', ratio: 'ratio-square' },
+            { span: 'grid-span-5', ratio: 'ratio-wide' },
+            { span: 'grid-span-3', ratio: 'ratio-square' },
+            { span: 'grid-span-5', ratio: 'ratio-wide' },
+            { span: 'grid-span-4', ratio: 'ratio-rect' },
+            { span: 'grid-span-7', ratio: 'ratio-panoramic' },
+            { span: 'grid-span-5', ratio: 'ratio-rect' },
+            { span: 'grid-span-4', ratio: 'ratio-rect' },
+            { span: 'grid-span-4', ratio: 'ratio-square' },
+            { span: 'grid-span-4', ratio: 'ratio-wide' }
+        ];
+
+        // Fallback local projects if Supabase is offline or empty
+        const fallbackProjects = [
+            {
+                title: "THE GRUDGE",
+                category: "Short Film",
+                description: "A psychological thriller short film",
+                year: "2025",
+                youtube_url: "https://youtu.be/s4nC6PtPjmo",
+                thumbnail: "assets/images/grudge.png"
+            },
+            {
+                title: "MY PROTEIN",
+                category: "Commercial",
+                description: "Enter the colorful world of fitness",
+                year: "2025",
+                youtube_url: "https://youtube.com/shorts/Sf4-pQWcONQ?feature=share",
+                thumbnail: "assets/images/My Protein thumbnail.png"
+            },
+            {
+                title: "CONVERSE ALL STAR",
+                category: "Commercial",
+                description: "High top sneakers product anthem",
+                year: "2025",
+                youtube_url: "https://youtube.com/shorts/FKCdP24f-ls?feature=share",
+                thumbnail: "assets/images/converse all star.png"
+            },
+            {
+                title: "HAR DIN",
+                category: "Short Film",
+                description: "Stories of ordinary life captured with grit",
+                year: "2026",
+                youtube_url: "https://youtu.be/4NPXIo8tToo",
+                thumbnail: "assets/images/HAR DIN vertical.png"
+            },
+            {
+                title: "THE KNOCK",
+                category: "Short Film",
+                description: "A suspense horror cinematic piece",
+                year: "2026",
+                youtube_url: "https://youtu.be/nLNXkOljgM8",
+                thumbnail: "assets/images/the knock thumbnail.png"
+            },
+            {
+                title: "RUNNER EDITION",
+                category: "Commercial",
+                description: "High-performance running showcase",
+                year: "2026",
+                youtube_url: "https://youtube.com/shorts/vX9oyQjr-w8?feature=share",
+                thumbnail: "assets/images/runner.png"
+            },
+            {
+                title: "ELEPHANT VALLEY",
+                category: "Commercial",
+                description: "Urban experiential visual showcase",
+                year: "2026",
+                youtube_url: "https://youtube.com/shorts/GPL4E0NUsEg",
+                thumbnail: "assets/images/onestop tour 01.png"
+            },
+            {
+                title: "THAR ROX DELIVERY",
+                category: "Commercial",
+                description: "Cinematic automobile delivery chronicle",
+                year: "2026",
+                youtube_url: "https://youtube.com/shorts/oOu7T9Ur7Z8",
+                thumbnail: "assets/images/Thar rox delivery.png"
+            },
+            {
+                title: "BMW 5 SERIES",
+                category: "Commercial",
+                description: "Precision luxury automotive film",
+                year: "2026",
+                youtube_url: "https://youtube.com/shorts/nQ9yo0aVCDI?feature=share",
+                thumbnail: "assets/images/Brijraj Residency.png"
+            }
+        ];
+
         const renderProjects = (filter = 'All') => {
             dynamicProjectsTrack.innerHTML = '';
 
-            const filteredProjects = allProjects.filter(p => {
+            const projectList = (allProjects && allProjects.length > 0) ? allProjects : fallbackProjects;
+
+            const filteredProjects = projectList.filter(p => {
                 const isMainSite = p.show_on_main_site === undefined ? true : !!p.show_on_main_site;
                 if (!isMainSite) return false;
                 return filter === 'All' || p.category === filter;
             });
 
-            filteredProjects.forEach(p => {
+            filteredProjects.forEach((p, index) => {
                 const a = document.createElement('a');
                 a.href = '#';
 
                 const ytUrl = p.youtube_url || p.youtubeUrl || '';
                 const isShorts = ytUrl.toLowerCase().includes('shorts');
+                const ytId = extractYouTubeId(ytUrl);
 
                 let thumbSrc = (p.thumbnail && p.thumbnail.trim() !== '') ? p.thumbnail.trim().replace(/\\/g, '/') : null;
                 if (!thumbSrc) {
-                    const ytId = extractYouTubeId(ytUrl);
                     if (ytId) {
-                        thumbSrc = `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`;
+                        // For vertical shorts, use YouTube's native 1080x1920 Original Aspect Ratio thumbnail (oardefault.jpg)
+                        // which has NO letterboxing or blurred sidebars!
+                        thumbSrc = isShorts
+                            ? `https://img.youtube.com/vi/${ytId}/oardefault.jpg`
+                            : `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`;
                     } else {
                         thumbSrc = 'assets/images/placeholder.jpg';
                     }
                 }
 
-                const isVertical = isShorts ||
-                    (thumbSrc && (thumbSrc.includes('runner') || thumbSrc.includes('converse') || thumbSrc.includes('Protein') || thumbSrc.includes('vertical')));
+                const pattern = GRID_PATTERNS[index % GRID_PATTERNS.length];
 
-                a.className = `project-card${isVertical ? ' is-vertical' : ''}`;
+                a.className = `project-card ${pattern.span} ${pattern.ratio}`;
                 a.setAttribute('data-youtube-id', ytUrl);
-                if (isVertical) a.setAttribute('data-is-vertical', 'true');
+                if (isShorts) a.setAttribute('data-is-vertical', 'true');
+
+                // Title and subtitle matching reference image layout
+                const titleParts = (p.title || 'UNTITLED PROJECT').split('|');
+                const mainTitle = titleParts[0].trim();
+                const subtitle = p.description && p.description.trim() !== ''
+                    ? p.description.trim()
+                    : (titleParts[1] ? titleParts[1].trim() : (p.category || ''));
 
                 a.innerHTML = `
                     <div class="project-media">
-                        <span class="project-badge">${p.category || p.badge}</span>
-                        <img src="${thumbSrc}" alt="${p.title}" class="project-img" loading="lazy">
+                        <img src="${thumbSrc}" alt="${mainTitle}" class="project-img" loading="lazy">
                         <div class="project-play-overlay">
                             <svg viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M8 5v14l11-7z" />
@@ -1461,48 +1674,56 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                     </div>
                     <div class="project-info">
-                        <span class="project-title">${p.title}</span>
-                        <span class="project-year">${p.year || ''}</span>
+                        <div class="project-info-main">
+                            <h3 class="project-title">${mainTitle}</h3>
+                            <span class="project-year">${p.year || '2026'}</span>
+                        </div>
+                        ${subtitle ? `<p class="project-desc">${subtitle}</p>` : ''}
                     </div>
                 `;
 
                 const img = a.querySelector('.project-img');
                 if (img) {
                     img.addEventListener('load', () => {
-                        if (img.naturalHeight > img.naturalWidth * 1.1) {
-                            a.classList.add('is-vertical');
-                            a.setAttribute('data-is-vertical', 'true');
+                        // If a landscape thumbnail was supplied for a vertical short, zoom in to strip sidebars
+                        if (isShorts && img.naturalWidth > img.naturalHeight * 1.25) {
+                            img.classList.add('is-pillarboxed-thumb');
+                        }
+                    });
+                    img.addEventListener('error', () => {
+                        if (img.src.includes('oardefault.jpg') && ytId) {
+                            img.src = `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`;
+                            img.classList.add('is-pillarboxed-thumb');
+                        } else if (img.src.includes('maxresdefault.jpg') && ytId) {
+                            img.src = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
                         }
                     });
                 }
 
                 dynamicProjectsTrack.appendChild(a);
             });
-
-            // Initialize the physics drag slider after rendering
-            setTimeout(() => {
-                if (window.initInfiniteSlider) {
-                    window.initInfiniteSlider();
-                }
-            }, 100);
         };
 
         const loadFromSupabase = async () => {
             if (window.supabaseClient) {
-                const { data, error } = await window.supabaseClient
-                    .from('portfolio_projects')
-                    .select('*')
-                    .eq('hidden', false)
-                    .order('sort_order', { ascending: true });
+                try {
+                    const { data, error } = await window.supabaseClient
+                        .from('portfolio_projects')
+                        .select('*')
+                        .eq('hidden', false)
+                        .order('sort_order', { ascending: true });
 
-                if (!error && data) {
-                    allProjects = data;
-                    renderProjects('All');
-                    return;
+                    if (!error && data && data.length > 0) {
+                        allProjects = data;
+                        renderProjects('All');
+                        return;
+                    }
+                } catch (err) {
+                    console.warn('Supabase fetch error, using fallback projects', err);
                 }
             }
 
-            // Render empty or handle failure
+            allProjects = fallbackProjects;
             renderProjects('All');
         };
 

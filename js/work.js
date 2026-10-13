@@ -31,11 +31,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const ytUrl = p.youtube_url || p.youtubeUrl || '';
             const isShorts = ytUrl.toLowerCase().includes('shorts');
 
+            const ytId = extractYouTubeId(ytUrl);
             let thumbSrc = (p.thumbnail && p.thumbnail.trim() !== '') ? p.thumbnail.trim().replace(/\\/g, '/') : null;
             if (!thumbSrc) {
-                const ytId = extractYouTubeId(ytUrl);
                 if (ytId) {
-                    thumbSrc = `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`;
+                    thumbSrc = isShorts
+                        ? `https://img.youtube.com/vi/${ytId}/oardefault.jpg`
+                        : `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`;
                 } else {
                     thumbSrc = 'assets/images/placeholder.jpg';
                 }
@@ -65,8 +67,19 @@ document.addEventListener('DOMContentLoaded', () => {
             const img = a.querySelector('.work-card-img');
             if (img) {
                 img.addEventListener('load', () => {
+                    if (isShorts && img.naturalWidth > img.naturalHeight * 1.25) {
+                        img.classList.add('is-pillarboxed-thumb');
+                    }
                     if (img.naturalHeight > img.naturalWidth * 1.1) {
                         a.classList.add('is-vertical');
+                    }
+                });
+                img.addEventListener('error', () => {
+                    if (img.src.includes('oardefault.jpg') && ytId) {
+                        img.src = `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`;
+                        img.classList.add('is-pillarboxed-thumb');
+                    } else if (img.src.includes('maxresdefault.jpg') && ytId) {
+                        img.src = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
                     }
                 });
             }
